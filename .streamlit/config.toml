@@ -1,0 +1,12 @@
+[theme]
+primaryColor = "darkGoldenrod"
+backgroundColor = "#F5F5F5"
+secondaryBackgroundColor = "#F2EAD3"
+textColor = "#000000ff"
+font = "sans serif"
+
+[theme.sidebar]
+primaryColor = "Gold"
+backgroundColor = "#1F2022"
+font = "sans serif"
+textColor = "white"

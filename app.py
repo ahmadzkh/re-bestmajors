@@ -4,7 +4,8 @@ import pandas as pd
 import joblib
 import tensorflow as tf
 from pathlib import Path
-
+import io, base64
+from PIL import Image
 
 BASE_DIR = Path(__file__)
 data_path = BASE_DIR / "all_data.csv"
@@ -22,34 +23,80 @@ core_subjects = [
       'seni_budaya', 'penjaskes', 'sejarah'
 ]
 ipa_subjects = [
-      'fisika', 'kimia', 'biologi', 'matematika_peminatan', 'informatika',
+      'fisika', 'kimia', 'biologi', 'matematika_peminatan', 'informatika'
 ]
 ips_subjects = [
-      'ekonomi', 'geografi', 'sosiologi', 'antropologi', 'sastra_indonesia', 'bahasa_asing',
+      'ekonomi', 'geografi', 'sosiologi', 'antropologi', 'sastra_indonesia', 'bahasa_asing'
 ]
 
 all_features  = core_subjects + ipa_subjects + ips_subjects + ['track_bin']
 feature_cols = core_subjects + ipa_subjects + ips_subjects
 
-# --- Tambahkan di awal setelah set_page_config ---
-st.sidebar.image(str(logo_path), use_container_width=True, caption="Universitas Gunadarma")
+# === Streamlit UI ===
+st.set_page_config(
+      page_title="Re: Best Majors", 
+      layout="wide"
+      )
+
+buffer = io.BytesIO()
+Image.open(logo_path).save(buffer, format="PNG")
+b64 = base64.b64encode(buffer.getvalue()).decode()
+
+# langsung inject HTML
+st.sidebar.markdown(
+      f"""
+      <div style="text-align:center">
+            <img src="data:image/png;base64,{b64}" width="250px" caption="Universitas Gunadarma"/>
+      </div>
+      <p style="text-align:center">
+            Universitas Gunadarma
+      </p>
+      """,
+      unsafe_allow_html=True
+)
+
 st.sidebar.title("Menu")
+
+st.markdown(
+      """
+      <style>
+            /* perlu target kontainer utama Streamlit */
+            div[data-testid="stAppViewContainer"] > div {
+                  padding: 50px 0px !important;
+            }
+
+            /* --- Override Sidebar --- */
+            /* 1) Paksa section sidebar jadi fixed width */
+            section[data-testid="stSidebar"] {
+            min-width: 500px;
+            max-width: 500px;
+            }
+
+            /* 2) Pastikan inner block mengikuti */
+            section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] {
+            max-width: 450px;
+            width: 450px;
+            }
+            
+      </style>
+      """,
+      unsafe_allow_html=True,
+)
+
 # --- Inisialisasi session state untuk menyimpan halaman yang dipilih ---
 if 'page' not in st.session_state:
       st.session_state.page = "Informasi"  # Halaman default
-if st.sidebar.button("Informasi"):
+if st.sidebar.button("Informasi", use_container_width=True):
       st.session_state.page = "Informasi"
-if st.sidebar.button("Grafik SHAP"):
+if st.sidebar.button("Grafik SHAP", use_container_width=True):
       st.session_state.page = "Grafik SHAP"
-if st.sidebar.button("Prediksi Jurusan"):
-      st.session_state.page = "Prediksi Jurusan"
+if st.sidebar.button("Cari Jurusan", use_container_width=True):
+      st.session_state.page = "Cari Jurusan"
       
 # Ambil page terpilih
 menu = st.session_state.page
 
 if menu == "Informasi":
-      # === Streamlit UI ===
-      st.set_page_config(page_title="Re: Best Majors", layout="centered")
       st.title("🎓 Re: Best Majors")
       st.markdown("### Temukan rekomendasi jurusan kuliah terbaik berdasarkan nilai sekolahmu!")
       st.markdown("---")
@@ -60,163 +107,239 @@ if menu == "Informasi":
       
       Sistem ini dirancang untuk memudahkan siswa SMA memilih jurusan kuliah yang paling sesuai dengan potensi akademik mereka. Cukup masukkan nilai rapor dan jalur peminatan, lalu sistem yang didukung model Neural Network akan merekomendasikan tiga jurusan terbaik di Universitas Gunadarma untuk Anda. Buat keputusan lebih percaya diri dan mulailah perjalanan akademik Anda dengan tepat!
       
-      💡 **Fitur Utama**:
-      - Rekomendasi jurusan berbasis nilai akademik sekolah.
-      - Analisis SHAP untuk melihat pengaruh nilai pelajaran terhadap hasil prediksi.
-      - Gabungan pendekatan berbasis model dan rule-based.
 
-      📌 **Metode**: CRISP-DM (Cross Industry Standard Process for Data Mining)
-
-      🚀 Yuk, mulai prediksi jurusanmu sekarang dari menu **Prediksi Jurusan"** di samping!
+      🚀 Yuk, mulai prediksi jurusanmu sekarang dari menu **Cari Jurusan"** di samping!
       """)
       st.markdown("---")
+      st.markdown("""
+                  Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi (Kemendikbudristek) secara resmi mengumumkan penerapan Kurikulum Merdeka secara nasional mulai tahun ajaran 2025/2026. Keputusan ini disampaikan oleh Menteri Nadiem Makarim dalam konferensi pers di kantor Kemendikbudristek, Jakarta, pada Rabu (21/5).
+
+                  Kurikulum Merdeka sebelumnya telah diujicobakan sejak 2022 di ribuan sekolah penggerak di seluruh Indonesia. Setelah melalui evaluasi dan penyempurnaan, pemerintah memutuskan untuk menerapkannya di semua jenjang pendidikan dasar dan menengah.
+                  “Transformasi pendidikan adalah langkah penting menuju pembelajaran yang berpihak pada murid. Kurikulum Merdeka memberikan keleluasaan bagi sekolah dan guru untuk menyesuaikan materi sesuai konteks dan kebutuhan siswa,” ujar Nadiem.
+                  Dalam kurikulum ini, siswa diberikan lebih banyak ruang untuk eksplorasi dan pengembangan kompetensi, terutama melalui pembelajaran berbasis proyek. Sementara itu, penilaian berfokus pada proses dan capaian belajar, bukan hanya nilai akhir.
+                  Kemendikbudristek juga menyiapkan pelatihan intensif bagi guru dan kepala sekolah guna memastikan transisi berjalan lancar. Sosialisasi dan distribusi modul pembelajaran telah dimulai sejak awal Mei.
+                  Penerapan Kurikulum Merdeka diharapkan mampu meningkatkan kualitas pendidikan dan relevansi pembelajaran terhadap tantangan abad ke-21.
+                  <a href="https://suarmahasiswaawards.teropongmedia.id/artikel/kemendikbudristek-luncurkan-kurikulum-merdeka-secara-nasional-mulai-tahun-ajaran-2025-2026/#:~:text=Jakarta%2C%2022%20Mei%202025%20—%20Kementerian,mulai%20tahun%20ajaran%202025/2026." target="blank">Suar Mahasiswa Awards
+                  </a>
+                  """, unsafe_allow_html=True)
+      
+      st.markdown("""
+                  Struktur Kurikulum Merdeka SMA Kelas XI dan XII (Fase F)
+                  Pada fase F untuk kelas XI dan XII, struktur mata pelajaran dibagi menjadi lima kelompok utama, yaitu: 
+
+                  **Kelompok Mata Pelajaran Umum**
+                  Kelompok mata pelajaran ini wajib diikuti oleh semua siswa SMA.
+                  **Kelompok Mata Pelajaran MIPA**
+                  Kelompok MIPA terdiri dari ***Matematika, Fisika, Kimia, Biologi, dan Informasi***. Setiap sekolah wajib menyediakan paling sedikit tiga mata pelajaran dalam kelompok ini.
+                  **Kelompok Mata Pelajaran IPS**
+                  Kelompok IPS terdiri dari ***Ekonomi, Antropologi, Geografi, dan Sosiologi***. Sama seperti kelompok MIPA, setiap sekolah wajib menyediakan paling sedikit tiga mata pelajaran dalam kelompok ini.
+                  **Kelompok Mata Pelajaran Bahasa dan Budaya**
+                  Kelompok mata pelajaran ini bersifat pilihan. Itu artinya, sekolah bisa memilih untuk membuka kelompok mata pelajaran Bahasa dan Budaya atau tidak sesuai dengan ketersediaan SDM di sekolah.
+                  **Kelompok Vokasi dan Prakarya**
+                  Kelompok mata pelajaran Vokasi dan Prakarya juga bersifat pilihan. Sekolah bisa mengadakan mata pelajaran ini atau tidak, tergantung dengan ketersediaan SDM di sekolah. 
+                  <a href="https://www.quipper.com/id/blog/info-guru/kurikulum-merdeka-sma/" target="blank">Quipper Blog
+                  </a>
+                  """, unsafe_allow_html=True)
+      
       st.markdown("Berikut adalah daftar mata pelajaran yang digunakan dalam prediksi sesuai dengan Kurikulum Merdeka terbaru saat ini:")
       
-      st.markdown("### Mata Pelajaran Pokok :")
-      st.table(pd.DataFrame({"Mata Pelajaran": [s.replace("_", " ").title() for s in core_subjects]}))
+      col1, col2, col3 = st.columns(3)
+      with col1:
+            st.markdown("### Mata Pelajaran Pokok :")
+            st.table(pd.DataFrame({
+                  "Mata Pelajaran": [s.replace("_", " ").title() for s in core_subjects],
+                  }))
+      with col2:
+            st.markdown("### Peminatan IPA :")
+            st.table(pd.DataFrame({
+                  "Mata Pelajaran": [s.replace("_", " ").title() for s in ipa_subjects],
+                  }))
 
-      st.markdown("### Peminatan IPA :")
-      st.table(pd.DataFrame({"Mata Pelajaran": [s.replace("_", " ").title() for s in ipa_subjects]}))
-
-      st.markdown("### Peminatan IPS :")
-      st.table(pd.DataFrame({"Mata Pelajaran": [s.replace("_", " ").title() for s in ips_subjects]}))
+      with col3:
+            st.markdown("### Peminatan IPS :")
+            st.table(pd.DataFrame({
+                  "Mata Pelajaran": [s.replace("_", " ").title() for s in ips_subjects],
+                  }))
+            
+      st.markdown("---")
 
       st.markdown("### Jurusan :")
       st.table(pd.DataFrame({
             "Fakultas": [m.title() for m in df_major["faculty"]],
             "Jurusan": [m.title() for m in df_major["major"]],
-            }))
-
-      st.markdown("### Mata Pelajaran Terkait:")
-      st.table(pd.DataFrame({
-            "Jurusan": [m.title() for m in df_major["major"]],
-            "Mata Pelajaran": [m.replace(";", ", ").replace("_", " ").title() for m in df_major["related_subjects"]],
+            "Mata Pelajaran Terkait": [m.replace("_", " ").replace(";", ", ").title() for m in df_major["related_subjects"]],
             }))
 
       st.markdown("---")
       
-      
 elif menu == "Grafik SHAP":
+      st.set_page_config(
+      page_title="Re: Best Majors", 
+      layout="wide"
+      )
+      
+      st.markdown(
+            """
+            <style>
+            /* perlu target kontainer utama Streamlit */
+            div[data-testid="stAppViewContainer"] > div {
+                  padding: 50px 500px !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+      )
+
       st.header("📈 SHapley Additive exPlanations (SHAP)")
       
       st.markdown("""
       Ingin tahu mata pelajaran mana yang paling “berkuasa” dalam menentukan jurusan impianmu? __SHapley Additive exPlanations__ Summary Plot kami memetakan seberapa besar kontribusi setiap nilai rapor kalian dari Mata Pelajaran Informatika hingga Seni Budaya dalam mendorong rekomendasi jurusan. Bar paling atas artinya fitur itu kunci: misalnya, nilai Informatika tinggi mengarah ke jurusan IT, nilai Seni Budaya menuntun ke Arsitektur atau Desain Interior.
 
       Warna unik tiap batang (merah = nilai tinggi, biru = nilai rendah) langsung menunjukkan perilaku model—tanpa teori rumit, kamu bisa “melihat” logika AI kami bekerja! Singkat, visual, dan super intuitif: kini kamu bisa mengeksplorasi kekuatan masing‑masing mata pelajaran sebelum menentukan pilihan jurusan. 🚀
-                  
-                  """)
+                  """, unsafe_allow_html=True)
+      
+      st.markdown("---")
       
       # Ganti dengan path gambar SHAP Anda
       try:
-            st.image("images/shap_summary_plot.png", caption="SHAP Summary Plot", use_container_width=True)
+            buffer = io.BytesIO()
+            Image.open("images/shap_summary_plot_best.png").save(buffer, format="PNG")
+            b64 = base64.b64encode(buffer.getvalue()).decode()
+
+            # langsung inject HTML
+            st.markdown(
+                  f"""
+                  <div style="text-align:center">
+                        <img src="data:image/png;base64,{b64}" width="700px" caption="Universitas Gunadarma"/>
+                  </div>
+                  <p style="text-align:center">
+                        Universitas Gunadarma
+                  </p>
+                  """,
+                  unsafe_allow_html=True
+            )
       except:
-            st.warning("Plot SHAP belum tersedia. Silakan tambahkan file `images/shap_summary_plot.png`.")
-            
-      st.markdown("### Jurusan :")
-      st.table(pd.DataFrame({
-            "Kode": [m.replace("A", "Class ").title() for m in df_major["code"]],
-            "Jurusan": [m.title() for m in df_major["major"]],
-            }))
+            st.warning("Plot SHAP belum tersedia.")
       
+      st.markdown("---")
       st.markdown("""
       SHAP (SHapley Additive exPlanations) menunjukkan bahwa:
-            
-      ---
-      
-      - Seni Budaya (A13: Desain Interior; A11: Arsitektur)
-      
-      Fitur seni_budaya menempati urutan teratas SHAP bar chart—menandakan bahwa Desain Interior (A13) dan Arsitektur (A11) sangat “sensitif” terhadap nilai Seni Budaya siswa. Dengan nilai tinggi, model secara signifikan lebih condong merekomendasikan kedua jurusan ini, karena keduanya menuntut dasar estetika dan apresiasi seni.
-      
-      ---
-      
-      - Informatika (A4: Teknik Informatika; A7: Sistem Informasi; A8: Ilmu Komputer)
-      
-      Fitur informatika menempati posisi kedua dengan kontribusi luas ke Teknik Informatika (A4), Sistem Informasi (A7), dan Ilmu Komputer (A8). Warna‐warna kelas dominan—terutama Class 3 (A4) dan Class 7 (A8)—memperlihatkan bahwa siswa dengan nilai Informatika bagus sangat mungkin direkomendasikan ke jurusan‐jurusan IT tersebut.
-      
-      ---
-      
-      - Bahasa Inggris (A9: Sastra Inggris; A2: Akuntansi; A10: Psikologi)
-      
-      Fitur bahasa_inggris menjadi faktor penting hampir di seluruh jurusan, namun paling menonjol di Sastra Inggris (A9) dan juga turut memperkuat rekomendasi untuk Akuntansi (A2) serta Psikologi (A10). Ini mencerminkan kebutuhan bahasa yang kuat dalam jurusan humaniora maupun ekonomi-bisnis.
-      
-      ---
-      
-      - Matematika & Matematika Peminatan (A3: Teknik Industri; A4: Teknik Informatika; A5: Teknik Mesin; A8: Ilmu Komputer)
-      
-      Kedua fitur ini (bar biru dan pink-ke­oranye) sangat krusial untuk jurusan‐jurusan teknik dan komputasi. Teknik Industri (A3), Teknik Mesin (A5), dan Ilmu Komputer (A8) menerima lonjakan SHAP pada Matematika, sedangkan Matematika Peminatan khususnya mendorong rekomendasi ke Teknik Informatika (A4) dan Ilmu Komputer (A8).
-      
-      ---
-      
-      - Sosiologi & Ekonomi (A1: Manajemen; A2: Akuntansi; A10: Psikologi)
-      
-      Bar chart menunjukkan sosiologi dan ekonomi sebagai pendorong utama untuk Manajemen (A1) dan Akuntansi (A2) (kelas‐kelas biru tua dan hijau tua), serta untuk Psikologi (A10). Hal ini masuk akal karena ketiga jurusan tersebut memerlukan pemahaman sosial-ekonomi yang kuat.
-      
-      ---
-      
-      - Fisika & Kimia (A6: Teknik Elektro; A12: Teknik Sipil; A5: Teknik Mesin)
-      
-      Nilai fisika memiliki SHAP tertinggi untuk Teknik Elektro (A6) dan Teknik Sipil (A12), sementara kimia menunjukkan puncak kontribusi pada Teknik Industri (A3) dan Teknik Mesin (A5). Ini sesuai dengan kebutuhan dasar sains eksperimental di jurusan‐jurusan tersebut.
-      
-      ---
-      
-      - Bahasa Indonesia, Sastra Indonesia & Bahasa Asing (A9: Sastra Inggris; A10: Psikologi; A1/A2: Manajemen/Akuntansi)
-      
-      Ketiganya berkontribusi moderat—bahasa_indonesia dan sastra_indonesia memengaruhi jurusan humaniora dan sosial (Sastra Inggris, Psikologi), sedangkan bahasa_asing memperkuat pola untuk Sastra Inggris dan juga Psikologi, menunjukkan pentingnya kemampuan komunikasi verbal.
-      
-      ---
-      
-      - Geografi & Antropologi (A11: Arsitektur; A13: Desain Interior; A10: Psikologi)
-      
-      Kedua fitur ini menonjol untuk Arsitektur (A11) dan Desain Interior (A13) (kelas hijau tua dan oren muda), serta berkontribusi untuk Psikologi, mengindikasikan bahwa pemahaman ruang, budaya, dan manusia relevan untuk ketiga jurusan ini.
-      
-      ---
-      
-      - PPKn, Biologi, Agama & Penjaskes
-      
-      ppkn masih menunjukkan beberapa kontribusi ringan untuk Manajemen dan Akuntansi, sedangkan biologi memiliki peran kecil pada Psikologi dan Ilmu Komputer. Sementara itu, agama dan penjaskes praktis berkontribusi nol—model menyimpulkan bahwa dua mata pelajaran terakhir ini tidak signifikan untuk membedakan jurusan.
       """)
+      
+      with st.expander("Seni Budaya: Fondasi Kreativitas Juara"):
+            st.write('''
+            Seni Budaya menempati puncak grafik SHAP—fitur ini paling berpengaruh terhadap rekomendasi jurusan Desain Interior (A13) dan Arsitektur (A11). Bayangkan: setiap poin tambahan dalam nilai Seni Budaya langsung “mengangkat” peluang siswa ke program-program yang menuntut kepekaan visual dan imajinasi tinggi. Artinya, investasi pada seni bukan sekadar menghias portofolio, tapi benar‑benar “menggerakkan jarum” model kami dalam memetakan passion Anda!
+                  ''')
+
+      with st.expander("Matematika: Mesin Utama Rekomendasi Teknik"):
+            st.write('''
+            Di posisi kedua, Matematika menunjukkan betapa krusialnya logika dan numerik dalam memengaruhi jurusan teknik—dari Teknik Industri (A3), Teknik Informatika (A4), hingga Ilmu Komputer (A8). Setiap angka di buku rapor Anda “berbicara” ke model: semakin tinggi kemampuan kuantitatif, semakin besar bobotnya dalam memosisikan Anda ke jurusan‐jurusan berbasis angka dan algoritma.
+                  ''')
+
+      with st.expander("Bahasa Inggris: Pintu Gerbang Humaniora & Bisnis"):
+            st.write('''
+            Menjadi sorotan ketiga, Bahasa Inggris tak hanya penting untuk jurusan sastra, tetapi juga Akuntansi (A2) dan Psikologi (A10). Nilai bagus di sini memperlihatkan keterampilan komunikasi global—sesuatu yang diminati semua fakultas. Dengan kemampuan bahasa yang memukau, Anda “didorong” model ke program yang menuntut presentasi, riset, dan analisis teks kompleks.
+                  ''')
+
+      with st.expander("Informatika: Sinyal Kuat ke Dunia IT"):
+            st.write('''
+            Fitur Informatika tercatat urutan keempat—penanda jelas bahwa kecakapan coding dan logika komputasi menjadi “magnet” utama bagi Teknik Informatika (A4), Sistem Informasi (A7), dan Ilmu Komputer (A8). Saat Anda mencetak nilai tinggi di mapel ini, model kami otomatis “menyala” untuk jalur‐jalur teknologi paling mutakhir di kampus.
+                  ''')
+
+      with st.expander("Sosiologi: Pendorong Program Sosial-Ilmiah"):
+            st.write('''
+            Peringkat kelima milik Sosiologi: siswa dengan nilai unggul di sini akan melihat lonjakan SHAP terhadap jurusan Manajemen (A1), Akuntansi (A2), dan Psikologi (A10). Ini membuktikan bahwa kemampuan memahami dinamika masyarakat dan perilaku manusia menjadi aset penting dalam ranah sosial-ekonomi dan psikologis.
+                  ''')
+
+      with st.expander("Bahasa Indonesia & Sastra Indonesia: Pilar Humaniora"):
+            st.write('''
+            Di peringkat keenam dan ketujuh, keduanya memperkuat rekomendasi ke jurusan–jurusan humaniora seperti Sastra Inggris (A9) dan Psikologi (A10). Nilai kuat di mapel kebahasaan ini menandakan ketajaman analisis teks dan kefasihan berargumen—kemampuan krusial untuk riset kualitatif dan penulisan ilmiah.
+                  ''')
+
+      with st.expander("Fisika & Matematika Peminatan: Kunci Dunia Eksakta"):
+            st.write('''
+            ‘Fisika’ (peringkat 8) dan ‘Matematika Peminatan’ (peringkat 9) menegaskan: siswa dengan pijakan sains eksperimental dan matematika tingkat lanjut semakin condong ke Teknik Elektro (A6), Teknik Sipil (A12), dan Ilmu Komputer (A8). Dua fitur ini bekerja sinergis—membentuk “jembatan” antara teori abstrak dan aplikasi teknik.
+                  ''')
+
+      with st.expander("Ekonomi & Geografi: Membaca Peta Bisnis & Ruang"):
+            st.write('''
+            Masuk ke posisi 10 dan 11, Ekonomi memicu rekomendasi untuk Manajemen dan Akuntansi, sementara Geografi memperkuat peluang di Arsitektur (A11), Desain Interior (A13), dan Psikologi (A10). Ini menunjukkan bahwa wawasan ekonomi‐spasial serta pemahaman ruang-budaya punya peran penting di jurusan bisnis dan perencanaan.
+                  ''')
+
+      with st.expander("Kimia, Bahasa Asing, PPKn & Antropologi: Penguat Spesialisasi"):
+            st.write('''
+            Kimia (12) menyediakan dasar bagi Teknik Industri (A3) dan Teknik Mesin (A5), sedangkan Bahasa Asing (13) mendukung program humaniora. PPKn (14) dan Antropologi (15) memberi kontribusi moderat pada jurusan sosial-ekonomi. Meski lebih “halus,” fitur‐fitur ini menyempurnakan “fit” rekomendasi kami—memberikan warna khusus di profil setiap calon mahasiswa.
+                  ''')
+
+      with st.expander("Biologi, Penjaskes, Agama & Sejarah: Kontribusi Minimal"):
+            st.write('''
+            Terakhir, nilai Biologi, Penjaskes, Agama, dan Sejarah (peringkat 16–19) memiliki dampak yang sangat kecil. Model menyimpulkan bahwa keempat mapel ini kurang membedakan antara program studi, sehingga cenderung “menetral” dalam rekomendasi.
+                  ''')
       st.markdown("---")
       
 
 # --- Prediksi Jurusan" ---
-elif menu == "Prediksi Jurusan":
-      st.header("Prediksi Jurusan")
-      def predict_major_from_streamlit(input_data, track_bin):
-            df_num = pd.DataFrame([{f: float(input_data[f]) for f in feature_cols}]).astype(float)   
+elif menu == "Cari Jurusan":
+      st.header("Cari Rekomendasi Jurusan")
+      def predict_major_from_streamlit(input_data: dict, track_bin: int):
+            """
+            - input_data: dict mapping feature (nama mapel) -> nilai (float)
+            - track_bin : 1 untuk IPA, 0 untuk IPS
+            """
+            # 1) Siapkan DataFrame numerik & hitung probabilitas
+            df_num = pd.DataFrame(
+                  [{f: float(input_data[f]) for f in feature_cols}]
+            ).astype(float)
             X_num = num_pipe.transform(df_num.values)
-            proba = model.predict(X_num)[0]
-            idx  = np.argmax(proba)
-            code = le.inverse_transform([idx])[0]
-            
-            # 2) Kumpulkan semua kandidat yang memenuhi passing grade
-            candidates = []
-            for idx in np.argsort(proba)[::-1]:
-                  if proba[idx] <= 0:
+            proba = model.predict(X_num)[0]  # array shape (n_classes,)
+
+            # 2) Filter df_major sesuai track_bin
+            #    track_type bisa 'IPA', 'IPS', atau 'IPA/IPS'
+            desired = 'IPA' if track_bin == 1 else 'IPS'
+            df_track = df_major[
+                  df_major['track_type'].str.upper().isin([desired, 'IPA/IPS'])
+            ].copy()
+
+            # 3) Hitung rata‑rata related_subjects dan kumpulkan yang lulus passing_grade
+            results = []
+            for _, row in df_track.iterrows():
+                  code = row['code']
+                  pg   = row['passing_grade']
+                  rels = [s.strip() for s in row['related_subjects'].split(';')]
+
+                  # ambil nilai, kalau ada 0 → skip seluruh jurusan
+                  vals = []
+                  for subj in rels:
+                        v = float(input_data.get(subj, 0))
+                        if v <= 0:
+                              vals = []
+                              break
+                        vals.append(v)
+                  if not vals:
                         continue
 
-                  code = le.inverse_transform([idx])[0]
-                  row  = df_major.loc[df_major['code'] == code].squeeze()
-
-                  # hitung rata‑rata related_subjects
-                  rel    = [s.strip() for s in row.related_subjects.split(';')]
-                  scores = [float(input_data.get(s, 0)) for s in rel]
-                  if not scores:
-                        continue
-
-                  avg = sum(scores) / len(scores)
-                  pg  = row.get('passing_grade', 0)
-                  if avg >= pg:
-                        candidates.append({
-                        'code':    code,
-                        'faculty': row.faculty,
-                        'major':   row.major,
-                        'avg':     avg,
-                        'p':       proba[idx]
+                  avg_score = sum(vals) / len(vals)
+                  if avg_score >= pg:
+                        # simpan
+                        results.append({
+                        'code'   : code,
+                        'faculty': row['faculty'],
+                        'major'  : row['major'],
+                        'avg'    : avg_score,
+                        'pg'     : pg,
+                        # format daftar mapel terurut desc
+                        'rel_str': ", ".join(
+                              subj.replace('_',' ').title()
+                              for subj, _ in sorted(zip(rels, vals),
+                                                      key=lambda x: x[1], reverse=True)
+                        )
                         })
 
-            # 3) Urutkan berdasarkan avg menurun, ambil top‑3
-            top3 = sorted(candidates, key=lambda x: x['avg'], reverse=True)[:3]
+            # 4) Pilih top 3 berdasar avg (menurun)
+            top3 = sorted(results, key=lambda x: x['avg'], reverse=True)[:3]
             return top3
+
+
 
       track = st.radio("Pilih Jalur Peminatan:", ["IPA","IPS"])
       track_bin = 1 if track=="IPA" else 0
@@ -235,7 +358,7 @@ elif menu == "Prediksi Jurusan":
                         label,
                         value="",
                         key=feat,
-                        placeholder="0–100"
+                        placeholder="0.00 - 100.00"
                         )
                   input_data[feat] = val
             else:
@@ -250,40 +373,56 @@ elif menu == "Prediksi Jurusan":
             track_subjects = ips_subjects
       for i, feat in enumerate(all_features):
             label = feat.replace("_"," ").title()
-            if feat in track_subjects:
+            if feat in track_subjects==ipa_subjects:
                   # pakai text_input untuk bisa dikosongkan
                   with (col1 if i%2==0 else col2):
                         val = st.text_input(
                         label,
                         value="",
                         key=feat,
-                        placeholder="0–100"
+                        placeholder="0.00 - 100.00"
+                        )
+                  input_data[feat] = val
+            if feat in track_subjects==ips_subjects:
+                  # pakai text_input untuk bisa dikosongkan
+                  with (col1 if i%2==1 else col2):
+                        val = st.text_input(
+                        label,
+                        value="",
+                        key=feat,
+                        placeholder="0.00 - 100.00"
                         )
                   input_data[feat] = val
                   
+
       input_data['track_bin'] = track_bin
 
       st.markdown("---")
-      if st.button("Prediksi Jurusan"):
-            # 1) Validasi semua active_features terisi
+      if st.button("Mulai Cari", use_container_width=True):
             missing = [f for f in active_features if input_data[f].strip()==""]
             if missing:
                   st.warning(
-                        f"Mohon isi nilai untuk semua mata pelajaran: {', '.join([m.replace('_',' ').title() for m in missing])}."
+                  f"Mohon isi nilai untuk semua mata pelajaran: "
+                  f"**{', '.join([m.replace('_',' ').title() for m in missing])}.**"
                   )
+                  st.markdown("---")
+
             else:
-                  # Panggil fungsi
                   recs = predict_major_from_streamlit(input_data, track_bin)
                   if not recs:
-                        st.warning("Tidak ada jurusan yang memenuhi passing grade.")
+                        st.warning("Maaf sepertinya tidak ada jurusan yang memenuhi Passing Grade.")
                   else:
-                        st.header(f"🎯 ({len(recs)}) Rekomendasi Jurusan")
-                        for i, r in enumerate(recs,1):
-                              st.subheader(f"**{i}. {r['major']}** (Kode: {r['code']})")
-                              st.markdown(f"- Fakultas: {r['faculty']}")
-                              st.markdown(f"- Rata-rata Nilai Mata Pelajaran Terkait: {r['avg']:.2f}")
-                              # tampilkan passing grade di df_major
-                              st.markdown(f"- Passing Grade: {df_major[df_major['code'] == r['code']]['passing_grade'].values[0]}")
-                              st.markdown("---")
-                              
-st.caption("📘 Dibuat oleh Ahmad Zaky Humami 2025 – Powered by Machine Learning")
+                        st.success(f"### 🎉 Prediksi berhasil! 🎯 {len(recs)} Jurusan yang cocok buat kamu!")
+                        # st.header(f"🎯 {len(recs)} Rekomendasi Jurusan")
+                        cols = st.columns(len(recs))
+                        for col, r in zip(cols, recs):
+                              with col:
+                                    st.markdown(f"### {r['major']}  \nKode: **{r['code']}**")
+                                    st.markdown(f"- **Fakultas:** {r['faculty']}")
+                                    st.markdown(f"- **Passing Grade:** {df_major.loc[df_major['code']==r['code'],'passing_grade'].values[0]:.2f}")
+                                    st.markdown("##### Rata‑rata Nilai Mapel Terkait")
+                                    st.markdown(f"{r['rel_str']} : **{r['avg']:.2f}**")
+                        
+                        st.markdown("---")
+                        
+st.caption("📘 Dibuat oleh Ahmad Zaky Humami | [50422138] | S1 Informatika | Universitas Gunadarma - 2025")
