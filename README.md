@@ -8,7 +8,8 @@ UNIVERSITAS GUNADARMA 2025**
 - **NPM       :** 50422138
 
 <p align="center">
-    <img src="" width=500 alt="gunadarma_logo" />
+    <img width="250" alt="logo-gundar" src="https://github.com/user-attachments/assets/e737e330-00c4-4688-a706-25a8de016f63" />
+
 </p>
 
 [![Streamlit App](https://img.shields.io/badge/Streamlit-App-orange)](https://github.com/ahmadzkh/re-bestmajors)  
@@ -199,7 +200,7 @@ Jumlah Duplikasi Data Rating : 0
 ##### Proporsi Jalur Peminatan (track)
 
 <p align="center">
-    <img src="" width=500 alt="track_distribution" />
+    <img width="989" height="590" alt="track_distribution" src="https://github.com/user-attachments/assets/a795582b-8d9f-43f2-aa02-4cb8de1a00c2" />
 </p>
 
 Proporsi Jalur Peminatan (track):
@@ -207,7 +208,7 @@ Proporsi Jalur Peminatan (track):
 ##### Distribusi Nilai Mata Pelajaran Pokok
 
 <p align="center">
-    <img src="" width=500 alt="core_subjects" />
+    <img width="1189" height="788" alt="core_subjects" src="https://github.com/user-attachments/assets/9565ab14-1fec-45f0-a0f6-329fc5f678e6" />
 </p>
 
 Distribusi Nilai Mata Pelajaran Pokok: 
@@ -215,7 +216,7 @@ Distribusi Nilai Mata Pelajaran Pokok:
 ##### Distribusi Nilai Mata Pelajaran IPA
 
 <p align="center">
-    <img src="" width=500 alt="ipa_subjects" />
+    <img width="1189" height="567" alt="ipa_subjects" src="https://github.com/user-attachments/assets/e63d8ea9-f418-41fc-97ab-7540eb1c916a" />
 </p>
 
 Distribusi Nilai Mata Pelajaran IPA: 
@@ -223,7 +224,7 @@ Distribusi Nilai Mata Pelajaran IPA:
 ##### Distribusi Nilai Mata Pelajaran IPS
 
 <p align="center">
-    <img src="" width=500 alt="ips_subjects" />
+    <img width="1189" height="567" alt="ips_subjects" src="https://github.com/user-attachments/assets/82b11231-f40e-4bd7-b3ba-07e80453819e" />
 </p>
 
 Distribusi Nilai Mata Pelajaran IPS:
@@ -315,7 +316,7 @@ df_major['passing_grade'] = add_passing_grade(df_student, df_major, pct=75)
 Output :
 
 <p align="center">
-    <img src="" width=500 alt="passing_grades" />
+    <img width="1043" height="388" alt="passing_grades" src="https://github.com/user-attachments/assets/a0121e28-69e1-4b46-afde-9ce4c6f86830" />
 </p>
 
 
@@ -328,7 +329,7 @@ final_df = df_student.drop(columns=['student_id','track'])
 Ouput : 
 
 <p align="center">
-    <img src="" width=500 alt="mapping_track" />
+    <img width="1895" height="336" alt="mapping_track" src="https://github.com/user-attachments/assets/ad619c3a-69d0-48cb-94a5-9fd1d7def777" />
 </p>
 
 
@@ -419,7 +420,7 @@ history = model.fit(
 ```
 
 <p align="center">
-    <img src="" width=500 alt="neuralnetwork_sequential" />
+    <img width="607" height="505" alt="sequential_layers" src="https://github.com/user-attachments/assets/1de3b069-d046-4e42-a7df-c374ff910cc3" />
 </p>
 
 Model ini saya kompilasi dengan optimizer Adam, loss categorical_crossentropy, dan metrik accuracy. Selain itu, saya menambahkan callback EarlyStopping (monitor=‘val_loss’, patience=10) agar pelatihan berhenti otomatis saat tidak ada peningkatan, meminimalkan overfitting dan menghemat waktu komputasi.
@@ -428,7 +429,7 @@ Model ini saya kompilasi dengan optimizer Adam, loss categorical_crossentropy, d
 SHAP (SHapley Additive exPlanations) Summary Plot menampilkan kontribusi rata‑rata absolut setiap fitur terhadap prediksi model, diukur sebagai nilai SHAP. Sumbu horizontal menggambarkan “mean(|SHAP value|)”: semakin panjang batang, semakin besar peran fitur tersebut dalam memengaruhi keputusan model. Fitur–fitur diurutkan dari yang paling penting (puncak grafik) hingga yang paling tidak berpengaruh (bawah grafik).
 
 <p align="center">
-    <img src="" width=500 alt="shap_graph" />
+    <img width="790" height="900" alt="shap_summary_plot" src="https://github.com/user-attachments/assets/821dece7-7ee4-4c43-a3a7-8dfd8900598b" />
 </p>
 
 Warna pada setiap batang mewakili nilai aktual fitur: titik‑titik merah menandakan sampel dengan nilai fitur tinggi, biru menandakan sampel dengan nilai rendah. Misalnya, pada grafik di atas fitur informatika dan seni_budaya berada di urutan teratas, menunjukkan bahwa variasi nilai kedua mata pelajaran ini paling banyak menggeser probabilitas rekomendasi jurusan; siswa dengan nilai informatika tinggi lebih cenderung dipetakan ke jurusan IT, sedangkan nilai seni_budaya tinggi mendorong rekomendasi jurusan–jurusan berbasis estetika (Desain Interior, Arsitektur). Dengan demikian, SHAP memberikan gambaran kuantitatif sekaligus intuitif tentang mana mata pelajaran yang paling krusial bagi model dalam menentukan jurusan terbaik bagi setiap siswa.
@@ -438,7 +439,7 @@ Warna pada setiap batang mewakili nilai aktual fitur: titik‑titik merah menand
 LIME (Local Interpretable Model‑agnostic Explanations) LIME membantu kita memahami “mengapa” model Neural Network mengambil keputusan tertentu untuk tiap sampel siswa. Daripada melihat keseluruhan dataset, LIME membuat model lokal sederhana (biasanya regresi linier) di sekitar titik data yang ingin dijelaskan. Pada grafik LIME:
 
 <p align="center">
-    <img src="" width=500 alt="lime_graph" />
+    <img width="1273" height="220" alt="lime_model" src="https://github.com/user-attachments/assets/24ad46cf-e208-44a3-87bb-73cd10120ac2" />
 </p>
 
 1. Panel kiri memperlihatkan probabilitas prediksi masing‑masing jurusan, sehingga Anda tahu seberapa yakin model.
@@ -498,11 +499,11 @@ for stage in range(4):  # 4 × 50 = 200 iterasi total
 ```
 
 <p align="center">
-    <img src="" width=500 alt="shapcv_graph" />
+    <img width="791" height="900" alt="shap_summary_plot_best" src="https://github.com/user-attachments/assets/762bb18f-4e89-4241-b399-8658ddcd1780" />
 </p>
 
 <p align="center">
-    <img src="" width=500 alt="limecv_graph" />
+    <img width="1274" height="219" alt="lime_best_model" src="https://github.com/user-attachments/assets/40b05251-0d2a-4892-8895-d11c9cb1bd55" />
 </p>
 
 Insight dari hasil tuning:
@@ -512,14 +513,14 @@ Insight dari hasil tuning:
 ### Evaluasi Model Keras Sequential (Sebelum Tuning)
 
 <p align="center">
-    <img src="" width=500 alt="cm_model" />
+    <img width="903" height="790" alt="cm_model" src="https://github.com/user-attachments/assets/e6d87712-c51b-4e4c-bdd3-6a8ca110d144" />
 </p>
 Confusion matrix awal menunjukkan model mampu mengenali sebagian besar kelas jurusan dengan baik, terutama untuk kelas A4 (Teknik Informatika) yang terdeteksi 105 sampel dengan akurasi tinggi. Namun ada beberapa titik kebingungan (“off‑diagonal”) yang konsisten, misalnya 3 sampel A1 (Manajemen) terprediksi sebagai A13 (Desain Interior) dan 2 sampel A11 (Arsitektur) terdeteksi sebagai A4. Kelas A3 (Teknik Industri) relatif sedikit sampelnya sehingga terjadi mis‑classifikasi ke A7 (Sistem Informasi) meski hanya 2 kasus. Keseluruhan, rata‑rata akurasi tiap kelas berkisar antara 75–98%, menandakan model sudah belajar pola fitur akademik, tetapi masih butuh penyempurnaan pada jurusan dengan jumlah data terbatas atau feature overlap tinggi.
 
 ### Evaluasi Model Keras Sequential Terbaik (Setelah Tuning)
 
 <p align="center">
-    <img src="" width=500 alt="cm_best_model" />
+    <img width="900" height="790" alt="cm_best_model" src="https://github.com/user-attachments/assets/250b7253-a425-46f8-b425-114613f2e0c1" />
 </p>
 Confusion matrix model terbaik memperlihatkan peningkatan keseragaman diagonal: misalnya kelas “Code 8” (Ilmu Komputer) kini terdeteksi 107/109 sampel dengan benar, naik dari 105 sebelumnya. Kesalahan prediksi untuk kelas “Code 1” (Manajemen) yang awalnya 3 sample menurun menjadi 2, dan confusion antara A1/A2 berkurang secara signifikan. Beberapa kelas seperti “Code 3” (Teknik Industri) dan “Code 10” (Psikologi) juga menunjukkan peningkatan ketepatan prediksi. Secara keseluruhan, tuning hyperparameter melalui RandomizedSearchCV berhasil meningkatkan stabilitas dan konsistensi model, mengurangi noise di cell‑cell off‑diagonal, serta memperkuat kapabilitas model dalam membedakan jurusan yang fitur‑fiturnya saling tumpang‑tindih.
 
