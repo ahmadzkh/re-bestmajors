@@ -6,6 +6,7 @@ import tensorflow as tf
 from pathlib import Path
 import io, base64
 from PIL import Image
+import time
 
 BASE_DIR = Path(__file__)
 data_path = BASE_DIR / "all_data.csv"
@@ -315,6 +316,7 @@ elif menu == "Cari Jurusan":
                               vals = []
                               break
                         vals.append(v)
+                        
                   if not vals:
                         continue
 
@@ -339,12 +341,16 @@ elif menu == "Cari Jurusan":
             top3 = sorted(results, key=lambda x: x['avg'], reverse=True)[:3]
             return top3
 
-
-
       track = st.radio("Pilih Jalur Peminatan:", ["IPA","IPS"])
       track_bin = 1 if track=="IPA" else 0
       active_features = core_subjects + (ipa_subjects if track=="IPA" else ips_subjects)
       input_data = {}
+      
+      def predict_with_delay(input_data):
+            # Simulasi proses prediksi yang butuh waktu
+            time.sleep(10)  # jeda 10 detik
+            # … lalu panggil fungsi prediksi sesungguhnya …
+            return predict_major_from_streamlit(input_data, track_bin=track_bin)
       
       st.markdown("---")
       st.subheader("Masukkan Nilai Mata Pelajaran Pokok")
@@ -396,9 +402,11 @@ elif menu == "Cari Jurusan":
                   
 
       input_data['track_bin'] = track_bin
+      
 
       st.markdown("---")
       if st.button("Mulai Cari", use_container_width=True):
+                  
             missing = [f for f in active_features if input_data[f].strip()==""]
             if missing:
                   st.warning(
@@ -406,9 +414,11 @@ elif menu == "Cari Jurusan":
                   f"**{', '.join([m.replace('_',' ').title() for m in missing])}.**"
                   )
                   st.markdown("---")
-
             else:
-                  recs = predict_major_from_streamlit(input_data, track_bin)
+                  # 1) Tampilkan spinner sambil menunggu
+                  with st.spinner("Sedang menghitung rekomendasi…"):
+                        recs = predict_with_delay(input_data)
+                  # recs = predict_major_from_streamlit(input_data, track_bin)
                   if not recs:
                         st.warning("Maaf sepertinya tidak ada jurusan yang memenuhi Passing Grade.")
                   else:
@@ -420,7 +430,7 @@ elif menu == "Cari Jurusan":
                                     st.markdown(f"### {r['major']}  \nKode: **{r['code']}**")
                                     st.markdown(f"- **Fakultas:** {r['faculty']}")
                                     st.markdown(f"- **Passing Grade:** {df_major.loc[df_major['code']==r['code'],'passing_grade'].values[0]:.2f}")
-                                    st.markdown("##### Rata‑rata Nilai Mapel Terkait")
+                                    st.markdown("##### Rata‑rata Nilai Terkait")
                                     st.markdown(f"{r['rel_str']} : **{r['avg']:.2f}**")
                         
                         st.markdown("---")

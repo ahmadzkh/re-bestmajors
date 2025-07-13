@@ -1,2 +1,5 @@
 .venv
 /.venv
+/Datasets/student_grades_5000_old.csv
+/Datasets/ug_majors_old.csv
+app copy.py
