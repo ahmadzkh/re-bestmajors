@@ -1,14 +1,22 @@
 code,major,faculty,track_type,related_subjects,passing_grade
-A1,Manajemen,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_indonesia;ppkn,80.05
-A2,Akuntansi,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_inggris;ppkn,80.19
-A3,Teknik Industri,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;informatika;matematika,80.85
-A4,Teknik Informatika,Fakultas Teknologi Industri,IPA,matematika_peminatan;informatika;bahasa_inggris,81.5
-A5,Teknik Mesin,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;matematika,81.36
-A6,Teknik Elektro,Fakultas Teknologi Industri,IPA,fisika;matematika;informatika,82.2
-A7,Sistem Informasi,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,fisika;matematika_peminatan;informatika,80.33
-A8,Ilmu Komputer,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,matematika_peminatan;informatika;bahasa_inggris,81.5
-A9,Sastra Inggris,Fakultas Sastra,IPS,bahasa_inggris;bahasa_indonesia;sastra_indonesia,81.0
-A10,Psikologi,Fakultas Psikologi,IPS,biologi;sosiologi;bahasa_indonesia,81.75
-A11,Arsitektur,Fakultas Teknik Sipil dan Perencanaan,IPA,matematika;fisika;seni_budaya,81.0
-A12,Teknik Sipil,Fakultas Teknik Sipil dan Perencanaan,IPA,fisika;matematika;geografi,82.05
-A13,Desain Interior,Fakultas Teknik Sipil dan Perencanaan,IPS,seni_budaya;bahasa_indonesia;geografi,81.2
+A1,S1 Kedokteran,Fakultas Kedokteran,IPA,biologi;kimia;fisika;bahasa_inggris,81.02
+A2,S1 Sistem Informasi,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,fisika;matematika_peminatan;informatika,80.33
+A3,S1 Sistem Komputer,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,informatika;matematika_peminatan;fisika,80.33
+A4,S1 Farmasi,Fakultas Ilmu Kesehatan dan Farmasi,IPA,kimia;biologi;matematika,82.03
+A5,S1 Kebidanan,Fakultas Ilmu Kesehatan dan Farmasi,IPA,kimia;biologi;matematika;ppkn,80.39
+A6,S1 Arsitektur,Fakultas Teknik Sipil dan Perencanaan,IPA,matematika;fisika;seni_budaya,81.0
+A7,S1 Teknik Sipil,Fakultas Teknik Sipil dan Perencanaan,IPA,fisika;matematika;geografi,82.05
+A8,S1 Desain Interior,Fakultas Teknik Sipil dan Perencanaan,IPS,seni_budaya;bahasa_indonesia;geografi,81.2
+A9,S1 Manajemen,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_indonesia;ppkn,80.05
+A10,S1 Akuntansi,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_inggris;ppkn,80.19
+A11,S1 Ekonomi Syariah,Fakultas Ekonomi,IPS,ekonomi;ppkn;sejarah;agama,79.87
+A12,S1 Psikologi,Fakultas Psikologi,IPS,biologi;sosiologi;bahasa_indonesia,81.75
+A13,S1 Teknik Industri,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;informatika;matematika,80.85
+A14,S1 Informatika,Fakultas Teknologi Industri,IPA,fisika;matematika_peminatan;informatika;bahasa_inggris,81.1
+A15,S1 Teknik Mesin,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;matematika,81.36
+A16,S1 Teknik Elektro,Fakultas Teknologi Industri,IPA,fisika;matematika;informatika,82.2
+A17,S1 Agroteknologi,Fakultas Teknologi Industri,IPA,biologi;kimia;geografi,82.8
+A18,S1 Sastra Inggris,Fakultas Sastra dan Budaya,IPS,bahasa_inggris;bahasa_indonesia;sastra_indonesia,81.0
+A19,S1 Sastra Tiongkok,Fakultas Sastra dan Budaya,IPS,bahasa_asing;bahasa_indonesia;sastra_indonesia,82.09
+A20,S1 Pariwisata,Fakultas Sastra dan Budaya,IPS,geografi;bahasa_inggris;ppkn;sejarah,80.1
+A21,S1 Ilmu Komunikasi,Fakultas Ilmu Komunikasi,IPS,bahasa_inggris;bahasa_indonesia;ppkn,80.23

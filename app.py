@@ -63,20 +63,19 @@ st.markdown(
       <style>
             /* perlu target kontainer utama Streamlit */
             div[data-testid="stAppViewContainer"] > div {
-                  padding: 50px 0px !important;
+                  margin: 0px auto !important;
             }
-
             /* --- Override Sidebar --- */
             /* 1) Paksa section sidebar jadi fixed width */
             section[data-testid="stSidebar"] {
-            min-width: 500px;
-            max-width: 500px;
+            min-width: 350px;
+            max-width: 350px;
             }
 
             /* 2) Pastikan inner block mengikuti */
             section[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] {
-            max-width: 450px;
-            width: 450px;
+            max-width: 300px;
+            width: 100%;
             }
             
       </style>
@@ -184,7 +183,9 @@ elif menu == "Grafik SHAP":
             <style>
             /* perlu target kontainer utama Streamlit */
             div[data-testid="stAppViewContainer"] > div {
-                  padding: 50px 500px !important;
+                  max-widht: 1200px;
+                  min-width: 1200px;
+                  width: 1200px;
             }
             </style>
             """,
@@ -296,13 +297,17 @@ elif menu == "Cari Jurusan":
 
             # 2) Filter df_major sesuai track_bin
             #    track_type bisa 'IPA', 'IPS', atau 'IPA/IPS'
+            # Tangkap string track yang diinginkan
             desired = 'IPA' if track_bin == 1 else 'IPS'
+
+            # 2) Filter df_major hanya untuk track_type yang persis sesuai
             df_track = df_major[
-                  df_major['track_type'].str.upper().isin([desired, 'IPA/IPS'])
+            df_major['track_type'].str.upper() == desired
             ].copy()
 
             # 3) Hitung rata‑rata related_subjects dan kumpulkan yang lulus passing_grade
             results = []
+            underrated = []
             for _, row in df_track.iterrows():
                   code = row['code']
                   pg   = row['passing_grade']
@@ -336,13 +341,37 @@ elif menu == "Cari Jurusan":
                                                       key=lambda x: x[1], reverse=True)
                         )
                         })
+                  else:
+                        # simpan
+                        underrated.append({
+                        'code'   : code,
+                        'faculty': row['faculty'],
+                        'major'  : row['major'],
+                        'avg'    : avg_score,
+                        'pg'     : pg,
+                        # format daftar mapel terurut desc
+                        'rel_str': ", ".join(
+                              subj.replace('_',' ').title()
+                              for subj, _ in sorted(zip(rels, vals),
+                                                      key=lambda x: x[1], reverse=True)
+                        )
+                        })
 
             # 4) Pilih top 3 berdasar avg (menurun)
-            top3 = sorted(results, key=lambda x: x['avg'], reverse=True)[:3]
-            return top3
+            results = sorted(results, key=lambda x: x['avg'], reverse=True)[:3]
+            underrated = sorted(underrated, key=lambda x: x['avg'], reverse=True)[:3]
+            return results, underrated
+      
 
       track = st.radio("Pilih Jalur Peminatan:", ["IPA","IPS"])
       track_bin = 1 if track=="IPA" else 0
+      
+      # 2) Simpan state terakhir dan cek perubahan
+      if 'last_track_bin' not in st.session_state:
+            st.session_state.last_track_bin = track_bin
+
+
+      
       active_features = core_subjects + (ipa_subjects if track=="IPA" else ips_subjects)
       input_data = {}
       
@@ -364,13 +393,19 @@ elif menu == "Cari Jurusan":
                         label,
                         value="",
                         key=feat,
-                        placeholder="0.00 - 100.00"
+                        placeholder="0.00"
                         )
                   input_data[feat] = val
             else:
                   input_data[feat] = "0"
                   
       st.markdown("---")
+      if st.session_state.last_track_bin != track_bin:
+            # muncul spinner ketika pilihan berubah
+            with st.spinner(f"Memuat mata pelajaran untuk {track}"):
+                  time.sleep(2)   # durasi delay, sesuaikan keinginan
+            # update state agar delay/spinner hanya terjadi sekali
+            st.session_state.last_track_bin = track_bin
       st.subheader("Masukkan Nilai Mata Pelajaran Peminatan")
       col1, col2 = st.columns(2)
       if track == "IPA":
@@ -386,7 +421,7 @@ elif menu == "Cari Jurusan":
                         label,
                         value="",
                         key=feat,
-                        placeholder="0.00 - 100.00"
+                        placeholder="0.00"
                         )
                   input_data[feat] = val
             if feat in track_subjects==ips_subjects:
@@ -417,10 +452,20 @@ elif menu == "Cari Jurusan":
             else:
                   # 1) Tampilkan spinner sambil menunggu
                   with st.spinner("Sedang menghitung rekomendasi…"):
-                        recs = predict_with_delay(input_data)
+                        recs, nrecs = predict_with_delay(input_data)
                   # recs = predict_major_from_streamlit(input_data, track_bin)
-                  if not recs:
+                  if len(recs) == 0:
                         st.warning("Maaf sepertinya tidak ada jurusan yang memenuhi Passing Grade.")
+                        cols = st.columns(len(nrecs))
+                        for col, r in zip(cols, nrecs):
+                              with col:
+                                    st.markdown(f"### {r['major']}  \nKode: **{r['code']}**")
+                                    st.markdown(f"- **Fakultas:** {r['faculty']}")
+                                    st.markdown(f"- **Passing Grade:** {df_major.loc[df_major['code']==r['code'],'passing_grade'].values[0]:.2f}")
+                                    st.markdown("##### Rata‑rata Nilai Terkait")
+                                    st.markdown(f"{r['rel_str']} : **{r['avg']:.2f}**")
+                              
+                        st.markdown("---")
                   else:
                         st.success(f"### 🎉 Prediksi berhasil! 🎯 {len(recs)} Jurusan yang cocok buat kamu!")
                         # st.header(f"🎯 {len(recs)} Rekomendasi Jurusan")

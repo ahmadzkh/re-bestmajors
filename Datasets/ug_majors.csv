@@ -1,14 +1,22 @@
 code,major,faculty,track_type,related_subjects
-A1,Manajemen,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_indonesia;ppkn
-A2,Akuntansi,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_inggris;ppkn
-A3,Teknik Industri,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;informatika;matematika
-A4,Teknik Informatika,Fakultas Teknologi Industri,IPA,matematika_peminatan;informatika;bahasa_inggris
-A5,Teknik Mesin,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;matematika
-A6,Teknik Elektro,Fakultas Teknologi Industri,IPA,fisika;matematika;informatika
-A7,Sistem Informasi,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,fisika;matematika_peminatan;informatika
-A8,Ilmu Komputer,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,matematika_peminatan;informatika;bahasa_inggris
-A9,Sastra Inggris,Fakultas Sastra,IPS,bahasa_inggris;bahasa_indonesia;sastra_indonesia
-A10,Psikologi,Fakultas Psikologi,IPS,biologi;sosiologi;bahasa_indonesia
-A11,Arsitektur,Fakultas Teknik Sipil dan Perencanaan,IPA,matematika;fisika;seni_budaya
-A12,Teknik Sipil,Fakultas Teknik Sipil dan Perencanaan,IPA,fisika;matematika;geografi
-A13,Desain Interior,Fakultas Teknik Sipil dan Perencanaan,IPS,seni_budaya;bahasa_indonesia;geografi
+A1,S1 Kedokteran,Fakultas Kedokteran,IPA,biologi;kimia;fisika;bahasa_inggris
+A2,S1 Sistem Informasi,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,fisika;matematika_peminatan;informatika
+A3,S1 Sistem Komputer,Fakultas Ilmu Komputer dan Teknologi Informasi,IPA,informatika;matematika_peminatan;fisika
+A4,S1 Farmasi,Fakultas Ilmu Kesehatan dan Farmasi,IPA,kimia;biologi;matematika
+A5,S1 Kebidanan,Fakultas Ilmu Kesehatan dan Farmasi,IPA,kimia;biologi;matematika;ppkn
+A6,S1 Arsitektur,Fakultas Teknik Sipil dan Perencanaan,IPA,matematika;fisika;seni_budaya
+A7,S1 Teknik Sipil,Fakultas Teknik Sipil dan Perencanaan,IPA,fisika;matematika;geografi
+A8,S1 Desain Interior,Fakultas Teknik Sipil dan Perencanaan,IPS,seni_budaya;bahasa_indonesia;geografi
+A9,S1 Manajemen,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_indonesia;ppkn
+A10,S1 Akuntansi,Fakultas Ekonomi,IPS,ekonomi;matematika;bahasa_inggris;ppkn
+A11,S1 Ekonomi Syariah,Fakultas Ekonomi,IPS,ekonomi;ppkn;sejarah;agama
+A12,S1 Psikologi,Fakultas Psikologi,IPS,biologi;sosiologi;bahasa_indonesia
+A13,S1 Teknik Industri,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;informatika;matematika
+A14,S1 Informatika,Fakultas Teknologi Industri,IPA,fisika;matematika_peminatan;informatika;bahasa_inggris
+A15,S1 Teknik Mesin,Fakultas Teknologi Industri,IPA,fisika;kimia;matematika_peminatan;matematika
+A16,S1 Teknik Elektro,Fakultas Teknologi Industri,IPA,fisika;matematika;informatika
+A17,S1 Agroteknologi,Fakultas Teknologi Industri,IPA,biologi;kimia;geografi
+A18,S1 Sastra Inggris,Fakultas Sastra dan Budaya,IPS,bahasa_inggris;bahasa_indonesia;sastra_indonesia
+A19,S1 Sastra Tiongkok,Fakultas Sastra dan Budaya,IPS,bahasa_asing;bahasa_indonesia;sastra_indonesia
+A20,S1 Pariwisata,Fakultas Sastra dan Budaya,IPS,geografi;bahasa_inggris;ppkn;sejarah
+A21,S1 Ilmu Komunikasi,Fakultas Ilmu Komunikasi,IPS,bahasa_inggris;bahasa_indonesia;ppkn
