@@ -197,19 +197,19 @@ Jumlah Duplikasi Data Majors : 0
 ```
 
 ### Exploratory Data Analysis (EDA)
-##### Proporsi Jalur Peminatan (track)
+#### Proporsi Jalur Peminatan (track)
 
 <p align="center">
     <img width="989" height="590" alt="track_distribution" src="https://github.com/user-attachments/assets/a795582b-8d9f-43f2-aa02-4cb8de1a00c2" />
 </p>
 
-##### Distribusi Nilai Mata Pelajaran Pokok
+#### Distribusi Nilai Mata Pelajaran Pokok
 
 <p align="center">
     <img width="1189" height="788" alt="core_subjects" src="https://github.com/user-attachments/assets/9565ab14-1fec-45f0-a0f6-329fc5f678e6" />
 </p>
 
-##### Distribusi Nilai Mata Pelajaran IPA
+#### Distribusi Nilai Mata Pelajaran IPA
 
 <p align="center">
     <img width="1189" height="567" alt="ipa_subjects" src="https://github.com/user-attachments/assets/e63d8ea9-f418-41fc-97ab-7540eb1c916a" />
@@ -263,7 +263,7 @@ df_major['passing_grade'] = add_passing_grade(df_student, df_major, pct=75)
 Output :
 
 <p align="center">
-    <img width="1043" height="388" alt="passing_grades" src="https://github.com/user-attachments/assets/a0121e28-69e1-4b46-afde-9ce4c6f86830" />
+    <img width="1512" height="853" alt="passing_grades" src="https://github.com/user-attachments/assets/09763a94-0df5-4481-a5e2-d1229a3a51e5" />
 </p>
 
 #### Recommended Major
@@ -304,7 +304,7 @@ df_student['recommended_major'] = recommended_codes
 Output Distribusi Recommended Major :
 
 <p align="center">
-
+    <img width="200" alt="recommended_major" src="https://github.com/user-attachments/assets/03d71c94-b531-4101-b5f0-6f6b2431533d" />
 </p>
 
 
@@ -440,7 +440,7 @@ Model ini saya kompilasi dengan optimizer Adam, loss categorical_crossentropy, d
 SHAP (SHapley Additive exPlanations) Summary Plot menampilkan kontribusi rata‑rata absolut setiap fitur terhadap prediksi model, diukur sebagai nilai SHAP. Sumbu horizontal menggambarkan "mean(|SHAP value|)": semakin panjang batang, semakin besar peran fitur tersebut dalam memengaruhi keputusan model. Fitur-fitur diurutkan dari yang paling penting (puncak grafik) hingga yang paling tidak berpengaruh (bawah grafik).
 
 <p align="center">
-    
+    <img width="790" height="900" alt="shap_summary_plot" src="https://github.com/user-attachments/assets/d837b6b9-e9a5-4211-b4ac-006a0b725f91" />
 </p>
 
 Warna pada setiap batang mewakili nilai aktual fitur: titik‑titik merah menandakan sampel dengan nilai fitur tinggi, biru menandakan sampel dengan nilai rendah. Misalnya, pada grafik di atas fitur informatika dan seni_budaya berada di urutan teratas, menunjukkan bahwa variasi nilai kedua mata pelajaran ini paling banyak menggeser probabilitas rekomendasi jurusan; siswa dengan nilai informatika tinggi lebih cenderung dipetakan ke jurusan IT, sedangkan nilai seni_budaya tinggi mendorong rekomendasi jurusan-jurusan berbasis estetika (Desain Interior, Arsitektur). Dengan demikian, SHAP memberikan gambaran kuantitatif sekaligus intuitif tentang mana mata pelajaran yang paling krusial bagi model dalam menentukan jurusan terbaik bagi setiap siswa.
@@ -450,7 +450,7 @@ Warna pada setiap batang mewakili nilai aktual fitur: titik‑titik merah menand
 LIME (Local Interpretable Model‑agnostic Explanations) LIME membantu kita memahami "mengapa" model Neural Network mengambil keputusan tertentu untuk tiap sampel siswa. Daripada melihat keseluruhan dataset, LIME membuat model lokal sederhana (biasanya regresi linier) di sekitar titik data yang ingin dijelaskan. Pada grafik LIME:
 
 <p align="center">
-    
+    <img width="1061" height="262" alt="lime_model" src="https://github.com/user-attachments/assets/ee84bf70-0479-4881-84da-7120d48391ec" />
 </p>
 
 1. Panel kiri memperlihatkan probabilitas prediksi masing‑masing jurusan, sehingga Anda tahu seberapa yakin model.
@@ -510,11 +510,11 @@ best_params_overall = random_search.best_params_
 ```
 
 <p align="center">
-    
+    <img width="790" height="900" alt="shap_summary_plot_best" src="https://github.com/user-attachments/assets/042d0a47-eb40-44ce-9c3a-93310149e7a5" />
 </p>
 
 <p align="center">
-    
+    <img width="1073" height="265" alt="lime_best_model" src="https://github.com/user-attachments/assets/bccb2919-4584-4d8a-8622-11086c2936a8" />
 </p>
 
 ## Evaluasi
@@ -522,7 +522,7 @@ best_params_overall = random_search.best_params_
 #### Accuracy per Epoch
 
 <p align="center">
-    
+    <img width="567" height="455" alt="epoch_accuracy" src="https://github.com/user-attachments/assets/7b3fac17-c3e2-4c78-beab-d62ced7627c4" />
 </p>
 
 Grafik "Accuracy per Epoch" memperlihatkan bahwa pada fase awal pelatihan (epoch 0-5), akurasi training dan validasi sama‑sama melonjak cepat—training accuracy dari sekitar 30 % ke 55 % dan validation accuracy dari 33 % ke 60 %. Setelah epoch ke‑10, laju peningkatan akurasi mulai melambat, namun validation accuracy terus menunjukkan tren naik yang stabil hingga mencapai puncaknya di kisaran 82-84 % pada akhir epoch (65). Sementara itu, training accuracy tercatat stabil di rentang 73-75 %, sedikit lebih rendah dari validation accuracy, menandakan model tidak mengalami overfitting signifikan. Kurva yang relatif "bergelombang kecil" pada kedua metrik menggambarkan adanya proses optimasi gradien yang konsisten—cukup agresif untuk menangkap pola tanpa membuat model terlalu kaku pada data training.
@@ -530,24 +530,26 @@ Grafik "Accuracy per Epoch" memperlihatkan bahwa pada fase awal pelatihan (epoch
 #### Loss per Epoch
 
 <p align="center">
-    
+    <img width="567" height="455" alt="epoch_loss" src="https://github.com/user-attachments/assets/ba7475f6-6f04-43f6-a9cb-c673fd64fea7" />
 </p>
 
 Pada grafik "Loss per Epoch", loss training dan validation keduanya menurun tajam di epoch 0-10, dari nilai awal sekitar 2,7 (training) dan 2,3 (validation) turun ke kisaran masing‑masing 1,2 dan 0,8. Setelah itu, loss training terus menurun secara perlahan dan merata hingga mencapai sekitar 0,75 pada epoch akhir, sedangkan validation loss menurun lebih cepat dan stabil di kisaran 0,53-0,60. Jarak yang relatif konsisten antara dua kurva—dengan validation loss selalu sedikit di bawah training loss—mengonfirmasi bahwa model tidak hanya semakin fit terhadap data training, tetapi juga generalisasi terhadap data baru terus membaik. Tidak terlihat tanda‑tanda divergensi atau kenaikan loss validation, sehingga bisa disimpulkan bahwa jumlah epoch dan parameter regularisasi (dropout, learning rate) telah dipilih secara tepat untuk mencegah overfitting.
 
 #### Confussion Matrix
+### Evaluasi Model Keras Sequential Terbaik (Sebelum Tuning)
 
 <p align="center">
-    
+    <img width="501" height="682" alt="class_report_model" src="https://github.com/user-attachments/assets/e7171d2b-d414-4064-bf89-f0e2c75906aa" />
+    <img width="900" height="790" alt="cm_model" src="https://github.com/user-attachments/assets/6475718f-e157-467c-893c-c1fb71501b8d" />
 </p>
 
 Confusion matrix awal menunjukkan performa yang cukup baik pada mayoritas kelas dengan diagonal yang tebal, misalnya kelas Code 22 berhasil mengklasifikasikan 229 dari 231 sampel dengan benar, kelas Code 4 mencapai 40/42, dan kelas Code 12 mencapai 32/34. Rata‑rata akurasi per kelas berada di kisaran 85-99%. Meski demikian, sejumlah kelas berjumlah data terbatas—seperti Code 3 (21/23 benar), Code 8 (20/22 benar) dan Code 16 (27/29 benar)—masih menunjukkan mis‑classifikasi 1-2 sampel, dan beberapa pola off‑diagonal konsisten terlihat pada pertukaran antar Code 1, Code 6, dan Code 18. Hal ini mengindikasikan bahwa meski model telah mempelajari pola fitur akademik dengan baik, ia masih kesulitan membedakan jurusan yang overlap fiturnya tinggi atau yang memiliki sedikit contoh.
 
 ### Evaluasi Model Keras Sequential Terbaik (Setelah Tuning)
-#### Confussion Matrix
 
 <p align="center">
-    
+    <img width="504" height="682" alt="class_report_best" src="https://github.com/user-attachments/assets/3b4b9e29-ae86-4b18-baf1-597b419248fb" />
+    <img width="900" height="790" alt="cm_best_model" src="https://github.com/user-attachments/assets/a3c08032-ed7d-4851-bf22-d1181474f9d3" />
 </p>
 
 Pada confusion matrix model terbaik, hampir semua kelas menyentuh peningkatan akurasi: Code 4 naik menjadi 41/42, Code 3 menjadi 22/23, Code 8 menjadi 21/22, Code 10 menjadi 18/19, Code 12 menjadi 34/35, Code 16 menjadi 29/30, dan Code 19 menjadi 31/32 sampel yang terprediksi benar. Kelas besar seperti Code 22 juga tetap stabil di 221/223. Selain itu, jumlah mis‑label global menurun dan distribusi kesalahan menjadi lebih tersebar—pertukaran antar Code 1-2 dan Code 6-7 kini hanya terjadi pada 1-2 sampel saja. Hal ini menunjukkan bahwa tuning hyperparameter dengan RandomizedSearchCV telah berhasil meningkatkan stabilitas dan konsistensi model, meski kelas dengan sangat sedikit data (seperti Code 15 dan Code 17) masih berpotensi mendapat manfaat dari data tambahan.
