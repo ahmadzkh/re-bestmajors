@@ -43,7 +43,7 @@ b64 = base64.b64encode(buffer.getvalue()).decode()
 st.sidebar.markdown(
       f"""
       <div style="text-align:center;">
-            <img src="data:image/png;base64,{b64}" width="200px"/>
+            <img src="data:image/png;base64,{b64}" width="250px"/>
       </div>
       """,
       unsafe_allow_html=True
@@ -107,6 +107,7 @@ if menu == "Informasi":
                   """, unsafe_allow_html=True)
       
       st.markdown("Berikut adalah daftar mata pelajaran yang digunakan dalam prediksi sesuai dengan Kurikulum Merdeka terbaru saat ini:")
+      st.markdown("---")
       
       col1, col2, col3 = st.columns(3)
       with col1:
@@ -156,10 +157,10 @@ elif menu == "Grafik SHAP":
             st.markdown(
                   f"""
                   <div style="text-align:center">
-                        <img src="data:image/png;base64,{b64}" width="700px" caption="Universitas Gunadarma"/>
+                        <img src="data:image/png;base64,{b64}" width="700px" />
                   </div>
                   <p style="text-align:center">
-                        Universitas Gunadarma
+                        SHapley Additive exPlanations 
                   </p>
                   """,
                   unsafe_allow_html=True
@@ -169,57 +170,57 @@ elif menu == "Grafik SHAP":
       
       st.markdown("---")
       st.markdown("""
-      SHAP (SHapley Additive exPlanations) menunjukkan bahwa:
+            SHAP (SHapley Additive exPlanations) menunjukkan bahwa:
       """)
       
-      with st.expander("Seni Budaya: Fondasi Kreativitas Juara"):
+      with st.expander("Fisika: Fitur Paling Dominan"):
             st.write('''
-            Seni Budaya menempati puncak grafik SHAP—fitur ini paling berpengaruh terhadap rekomendasi jurusan Desain Interior (A13) dan Arsitektur (A11). Bayangkan: setiap poin tambahan dalam nilai Seni Budaya langsung "mengangkat" peluang siswa ke program-program yang menuntut kepekaan visual dan imajinasi tinggi. Artinya, investasi pada seni bukan sekadar menghias portofolio, tapi benar‑benar "menggerakkan jarum" model kami dalam memetakan passion Anda!
+            Nilai Fisika menempati urutan tertinggi dalam SHAP summary plot, mengindikasikan bahwa performa pada mata pelajaran ini paling mempengaruhi rekomendasi jurusan—terutama program-program eksakta dan teknik seperti Teknik Fisika (Code 0), Teknik Elektro (Code 6), dan Teknik Sipil (Code 12). Peningkatan satu poin di rapor Fisika secara konsisten "menarik" model ke jurusan yang menuntut pemahaman konsep mekanika, gelombang, dan elektromagnetika.
                   ''')
 
-      with st.expander("Matematika: Mesin Utama Rekomendasi Teknik"):
+      with st.expander("Matematika: Dasar Logika dan Kuantitatif"):
             st.write('''
-            Di posisi kedua, Matematika menunjukkan betapa krusialnya logika dan numerik dalam memengaruhi jurusan teknik—dari Teknik Industri (A3), Teknik Informatika (A4), hingga Ilmu Komputer (A8). Setiap angka di buku rapor Anda "berbicara" ke model: semakin tinggi kemampuan kuantitatif, semakin besar bobotnya dalam memosisikan Anda ke jurusan‐jurusan berbasis angka dan algoritma.
+            Sebagai fitur kedua terpenting, Matematika memandu model dalam menilai kecakapan analitis siswa. Jurusan-jurusan seperti Teknik Informatika (Code 4), Teknik Industri (Code 2), dan Ilmu Komputer (Code 8) sangat responsif terhadap nilai Matematika—menunjukkan bahwa kemampuan numerik dan abstraksi algoritmik memiliki bobot kuat dalam pembentukan probabilitas rekomendasi.
                   ''')
 
-      with st.expander("Bahasa Inggris: Pintu Gerbang Humaniora & Bisnis"):
+      with st.expander("PPKn: Pilar Disiplin dan Kepemimpinan"):
             st.write('''
-            Menjadi sorotan ketiga, Bahasa Inggris tak hanya penting untuk jurusan sastra, tetapi juga Akuntansi (A2) dan Psikologi (A10). Nilai bagus di sini memperlihatkan keterampilan komunikasi global—sesuatu yang diminati semua fakultas. Dengan kemampuan bahasa yang memukau, Anda "didorong" model ke program yang menuntut presentasi, riset, dan analisis teks kompleks.
+            Menempati posisi ketiga, PPKn ternyata tidak hanya memengaruhi jurusan IPS dan Hukum, tetapi juga mendorong peluang di Manajemen (Code 1) dan Akuntansi (Code 2). Hal ini mengindikasikan bahwa nilai tinggi pada PPKn—yang mencerminkan kesadaran bernegara dan kedisiplinan—dianggap penting oleh model untuk jurusan yang memerlukan etika profesi dan kepemimpinan.
                   ''')
 
-      with st.expander("Informatika: Sinyal Kuat ke Dunia IT"):
+      with st.expander("Kimia: Gerbang Dunia Industri"):
             st.write('''
-            Fitur Informatika tercatat urutan keempat—penanda jelas bahwa kecakapan coding dan logika komputasi menjadi "magnet" utama bagi Teknik Informatika (A4), Sistem Informasi (A7), dan Ilmu Komputer (A8). Saat Anda mencetak nilai tinggi di mapel ini, model kami otomatis "menyala" untuk jalur‐jalur teknologi paling mutakhir di kampus.
+            Dengan peringkat keempat, Kimia menjadi penentu kuat bagi jurusan Teknik Kimia (Code 5), Teknik Industri (Code 2), dan Farmasi (Code 16). Siswa yang mencetak nilai Kimia tinggi akan melihat peningkatan eksponensial dalam SHAP value untuk program studi yang bergantung pada reaksi kimia, proses manufaktur, dan formulasi obat.
                   ''')
 
-      with st.expander("Sosiologi: Pendorong Program Sosial-Ilmiah"):
+      with st.expander("Bahasa Inggris: Keterampilan Komunikasi Global"):
             st.write('''
-            Peringkat kelima milik Sosiologi: siswa dengan nilai unggul di sini akan melihat lonjakan SHAP terhadap jurusan Manajemen (A1), Akuntansi (A2), dan Psikologi (A10). Ini membuktikan bahwa kemampuan memahami dinamika masyarakat dan perilaku manusia menjadi aset penting dalam ranah sosial-ekonomi dan psikologis.
+            Bahasa Inggris berada di urutan kelima, memengaruhi rekomendasi tidak hanya pada Sastra Inggris (Code 9) dan Ilmu Komunikasi (Code 14), tetapi juga pada Psikologi (Code 10) dan Manajemen (Code 1). Ini memperlihatkan bahwa kecakapan berbahasa asing—dan kemampuan memahami teks berbahasa Inggris—menjadi aset lintas disiplin dalam memproyeksikan citra akademik siswa.
                   ''')
 
-      with st.expander("Bahasa Indonesia & Sastra Indonesia: Pilar Humaniora"):
+      with st.expander("Biologi & Bahasa Indonesia: Pilar Life Sciences dan Humaniora"):
             st.write('''
-            Di peringkat keenam dan ketujuh, keduanya memperkuat rekomendasi ke jurusan-jurusan humaniora seperti Sastra Inggris (A9) dan Psikologi (A10). Nilai kuat di mapel kebahasaan ini menandakan ketajaman analisis teks dan kefasihan berargumen—kemampuan krusial untuk riset kualitatif dan penulisan ilmiah.
+            Nilai Biologi (peringkat keenam) terutama mengangkat peluang di Psikologi (Code 10) dan Farmasi (Code 16), sedangkan Bahasa Indonesia (peringkat ketujuh) mendorong jurusan-jurusan humaniora seperti Sastra Indonesia (Code 15) dan Ilmu Komunikasi (Code 14). Kombinasi kedua mata pelajaran ini menunjukkan dimensi kognitif—mulai dari pemahaman makhluk hidup hingga keahlian retorika.
                   ''')
 
-      with st.expander("Fisika & Matematika Peminatan: Kunci Dunia Eksakta"):
+      with st.expander("Matematika Peminatan & Informatika: Penguat TI"):
             st.write('''
-            "Fisika" (peringkat 8) dan "Matematika Peminatan" (peringkat 9) menegaskan: siswa dengan pijakan sains eksperimental dan matematika tingkat lanjut semakin condong ke Teknik Elektro (A6), Teknik Sipil (A12), dan Ilmu Komputer (A8). Dua fitur ini bekerja sinergis—membentuk "jembatan" antara teori abstrak dan aplikasi teknik.
+            Menempati peringkat kedelapan dan kesembilan, kedua fitur ini membentuk "sinyal ganda" bagi program-program teknologi: Matematika Peminatan mendukung Teknik Informatika (Code 4) dan Ilmu Komputer (Code 8), sedangkan Informatika (pemrograman) memperkuat rekomendasi untuk Sistem Informasi (Code 7) dan Rekayasa Perangkat Lunak (jika ada).
                   ''')
 
-      with st.expander("Ekonomi & Geografi: Membaca Peta Bisnis & Ruang"):
+      with st.expander("Ekonomi & Seni Budaya: Sinergi Bisnis dan Kreativitas"):
             st.write('''
-            Masuk ke posisi 10 dan 11, Ekonomi memicu rekomendasi untuk Manajemen dan Akuntansi, sementara Geografi memperkuat peluang di Arsitektur (A11), Desain Interior (A13), dan Psikologi (A10). Ini menunjukkan bahwa wawasan ekonomi‐spasial serta pemahaman ruang-budaya punya peran penting di jurusan bisnis dan perencanaan.
+            Ekonomi (peringkat kesepuluh) mengarahkan model ke Manajemen (Code 1), Akuntansi (Code 2), dan Ekonomi Pembangunan (jika tersedia). Sementara Seni Budaya (peringkat kesebelas) tetap relevan untuk Desain Interior (Code 13) dan Arsitektur (Code 11), menegaskan peran kreativitas dan estetika dalam rekomendasi jurusan berbasis seni rupa.
                   ''')
 
-      with st.expander("Kimia, Bahasa Asing, PPKn & Antropologi: Penguat Spesialisasi"):
+      with st.expander("Sejarah, Sastra Indonesia & Agama: Konteks Sosio-Budaya"):
             st.write('''
-            Kimia (12) menyediakan dasar bagi Teknik Industri (A3) dan Teknik Mesin (A5), sedangkan Bahasa Asing (13) mendukung program humaniora. PPKn (14) dan Antropologi (15) memberi kontribusi moderat pada jurusan sosial-ekonomi. Meski lebih "halus," fitur‐fitur ini menyempurnakan "fit" rekomendasi kami—memberikan warna khusus di profil setiap calon mahasiswa.
+            Dalam peringkat 12-14, nilai Sejarah, Sastra Indonesia, dan Agama memberikan "sentuhan akhir" pada rekomendasi jurusan sosial-ilmu seperti Ilmu Komunikasi (Code 14), Sosiologi (Code 17), dan ilmu budaya. Meski dampaknya moderat, fitur ini menambah dimensi pemahaman budaya dan etika ke dalam profil rekomendasi.
                   ''')
 
-      with st.expander("Biologi, Penjaskes, Agama & Sejarah: Kontribusi Minimal"):
+      with st.expander("Geografi, Sosiologi, Penjaskes, Bahasa Asing & Antropologi: Kontribusi Terbatas"):
             st.write('''
-            Terakhir, nilai Biologi, Penjaskes, Agama, dan Sejarah (peringkat 16-19) memiliki dampak yang sangat kecil. Model menyimpulkan bahwa keempat mapel ini kurang membedakan antara program studi, sehingga cenderung "menetral" dalam rekomendasi.
+            Kelima fitur paling bawah (peringkat 15-19) memiliki SHAP value relatif kecil, menandakan bahwa mereka kurang membedakan antar jurusan. Geografi dan Sosiologi sedikit memengaruhi Arsitektur (Code 11) dan perencanaan ruang, sedangkan Penjaskes, Bahasa Asing, dan Antropologi hampir bersifat netral dalam algoritma rekomendasi.
                   ''')
       st.markdown("---")
       

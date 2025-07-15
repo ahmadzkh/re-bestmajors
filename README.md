@@ -49,13 +49,13 @@ Tujuan dari penelitian ini adalah:
 ### Solution
 Untuk menyelesaikan permasalahan rekomendasi jurusan ini, saya menggunakan satu pendekatan pemodelan, yaitu jaringan saraf tiruan (Neural Network) dengan Keras Sequential. Model ini dibangun sebagai rangkaian lapisan (layers) yang saling berurutan: dimulai dari lapisan masukan (input layer) yang menerima nilai-nilai akademik siswa sebagai fitur, diikuti oleh beberapa lapisan tersembunyi (hidden layers) dengan fungsi aktivasi ReLU untuk menangkap hubungan non‑linier antar mata pelajaran, dan diakhiri oleh lapisan keluaran (output layer) beraktivasi softmax yang menghasilkan probabilitas untuk setiap kode jurusan Universitas Gunadarma.
 
-Semenjak fase CRISP‑DM “Modeling”, arsitektur dan jumlah neuron pada tiap lapisan disesuaikan melalui eksperimen hyperparameter (jumlah unit, laju dropout, optimizer, dan batch size) untuk memaksimalkan akurasi prediksi. Model dilatih menggunakan algoritma Adam pada loss fungsi categorical_crossentropy, kemudian dievaluasi dengan metrik akurasi dan confusion matrix. Dengan pendekatan ini, jaringan saraf mampu mempelajari pola kompleks nilai rapor siswa dan memproyeksikannya ke rekomendasi tiga jurusan terbaik secara andal.
+Semenjak fase CRISP‑DM "Modeling", arsitektur dan jumlah neuron pada tiap lapisan disesuaikan melalui eksperimen hyperparameter (jumlah unit, laju dropout, optimizer, dan batch size) untuk memaksimalkan akurasi prediksi. Model dilatih menggunakan algoritma Adam pada loss fungsi categorical_crossentropy, kemudian dievaluasi dengan metrik akurasi dan confusion matrix. Dengan pendekatan ini, jaringan saraf mampu mempelajari pola kompleks nilai rapor siswa dan memproyeksikannya ke rekomendasi tiga jurusan terbaik secara andal.
 
 
 ## Data Understanding
 ### Sumber Data
 Dataset Nilai Akademik Siswa (__student_grades_5000.csv__)
-Dataset ini disusun secara sintetis dengan bantuan model GPT untuk mensimulasikan kondisi nyata nilai rapor siswa SMA yang akan mendaftar ke Universitas Gunadarma. Nilai–nilai mata pelajaran pada dataset dibuat mengikuti skala 10–98, sesuai rentang penilaian Kurikulum Merdeka terbaru yang diterapkan oleh Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia. Setiap baris mewakili satu siswa, mencakup delapan mata pelajaran pokok (agama, PPKn, Bahasa Indonesia, Matematika, Bahasa Inggris, Seni Budaya, Penjaskes, Sejarah) serta mata pelajaran peminatan IPA atau IPS. Penciptaan data ini bertujuan memberikan distribusi nilai yang lebih variatif dan representatif, sekaligus mendekati pola sebaran akademik siswa dalam dunia nyata.
+Dataset ini disusun secara sintetis dengan bantuan model GPT untuk mensimulasikan kondisi nyata nilai rapor siswa SMA yang akan mendaftar ke Universitas Gunadarma. Nilai-nilai mata pelajaran pada dataset dibuat mengikuti skala 10-98, sesuai rentang penilaian Kurikulum Merdeka terbaru yang diterapkan oleh Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia. Setiap baris mewakili satu siswa, mencakup delapan mata pelajaran pokok (agama, PPKn, Bahasa Indonesia, Matematika, Bahasa Inggris, Seni Budaya, Penjaskes, Sejarah) serta mata pelajaran peminatan IPA atau IPS. Penciptaan data ini bertujuan memberikan distribusi nilai yang lebih variatif dan representatif, sekaligus mendekati pola sebaran akademik siswa dalam dunia nyata.
 
 Dataset Jurusan Universitas Gunadarma (__ug_majors.csv__)
 File ini memuat daftar 13 program studi di Universitas Gunadarma, lengkap dengan kode jurusan, nama fakultas, dan mata pelajaran terkait yang menjadi dasar rekomendasi. Selain itu, setiap jurusan dilengkapi kolom passing grade, yakni nilai ambang rata‑rata mata pelajaran terkait yang merefleksikan batas minimal kelayakan pendaftaran. Nilai passing grade diperoleh dari riset data historis dan kebijakan penerimaan di Universitas Gunadarma, lalu disisipkan secara eksplisit ke dalam dataset. Dengan demikian, dataset ini siap dipakai untuk memadukan rekomendasi model Neural Network dan penerapan aturan ambang kelulusan (threshold), sehingga menghasilkan sistem rekomendasi yang tidak hanya akurat secara prediksi, tapi juga realistis dalam konteks kebijakan seleksi perguruan tinggi.
@@ -64,8 +64,8 @@ File ini memuat daftar 13 program studi di Universitas Gunadarma, lengkap dengan
 #### Dataset Student Grades
 | Variabel               | Keterangan                                                         |
 | ---------------------- | ------------------------------------------------------------------ |
-| `student_id`           | ID unik setiap siswa, format “S00001” hingga “S05000”              |
-| `track`                | Jalur peminatan siswa: “IPA” atau “IPS”                            |
+| `student_id`           | ID unik setiap siswa, format "S00001" hingga "S05000"              |
+| `track`                | Jalur peminatan siswa: "IPA" atau "IPS"                            |
 | **Core Subjects**      |                                                                    |
 | `agama`                | Nilai mata pelajaran Pendidikan Agama                              |
 | `ppkn`                 | Nilai mata pelajaran PPKn (Pendidikan Pancasila & Kewarganegaraan) |
@@ -75,13 +75,13 @@ File ini memuat daftar 13 program studi di Universitas Gunadarma, lengkap dengan
 | `seni_budaya`          | Nilai mata pelajaran Seni & Budaya                                 |
 | `penjaskes`            | Nilai mata pelajaran Pendidikan Jasmani, Olahraga, dan Kesehatan   |
 | `sejarah`              | Nilai mata pelajaran Sejarah Indonesia & Dunia                     |
-| **Elective IPA**       | (kolom diisi jika `track` = “IPA”, else NaN)                       |
+| **Elective IPA**       | (kolom diisi jika `track` = "IPA", else NaN)                       |
 | `fisika`               | Nilai mata pelajaran Fisika                                        |
 | `kimia`                | Nilai mata pelajaran Kimia                                         |
 | `biologi`              | Nilai mata pelajaran Biologi                                       |
 | `matematika_peminatan` | Nilai Matematika peminatan (khusus IPA)                            |
 | `informatika`          | Nilai mata pelajaran Informatika                                   |
-| **Elective IPS**       | (kolom diisi jika `track` = “IPS”, else NaN)                       |
+| **Elective IPS**       | (kolom diisi jika `track` = "IPS", else NaN)                       |
 | `ekonomi`              | Nilai mata pelajaran Ekonomi                                       |
 | `sosiologi`            | Nilai mata pelajaran Sosiologi                                     |
 | `geografi`             | Nilai mata pelajaran Geografi                                      |
@@ -116,7 +116,7 @@ Data columns (total 21 columns):
  15  ekonomi               2127 non-null   float64
  16  sosiologi             2127 non-null   float64
  17  geografi              2127 non-null   float64
-...
+ 18  antropologi           2127 non-null   float64
  19  sastra_indonesia      2127 non-null   float64
  20  bahasa_asing          2127 non-null   float64
 dtypes: float64(19), object(2)
@@ -140,12 +140,12 @@ Kimia  | 2127
 Biologi  | 2127
 Matematika Peminatan  | 2127
 Informatika  | 2127
-Ekonomi  | 2127
-Sosiologi  | 2127
-Geografi  | 2127
-Antropologi  | 2127
-Sastra Indonesia  | 2127
-Bahasa Asing  | 2127
+Ekonomi  | 2775
+Sosiologi  | 2775
+Geografi  | 2775
+Antropologi  | 2775
+Sastra Indonesia  | 2775
+Bahasa Asing  | 2775
 
 Disini saya membiarkan saja missing values pada dataset student grades, dikaranakan pada siswa dengan track "IPA" pasti tidak memiliki nilai pada mata pelajaran peminatan "IPS" dan begitu juga sebaliknya.
 
@@ -193,7 +193,7 @@ Tidak terdapat Missing Value pada dataset Majors.
 
 ##### Majors Duplicated
 ```
-Jumlah Duplikasi Data Rating : 0
+Jumlah Duplikasi Data Majors : 0
 ```
 
 ### Exploratory Data Analysis (EDA)
@@ -203,23 +203,17 @@ Jumlah Duplikasi Data Rating : 0
     <img width="989" height="590" alt="track_distribution" src="https://github.com/user-attachments/assets/a795582b-8d9f-43f2-aa02-4cb8de1a00c2" />
 </p>
 
-Proporsi Jalur Peminatan (track):
-
 ##### Distribusi Nilai Mata Pelajaran Pokok
 
 <p align="center">
     <img width="1189" height="788" alt="core_subjects" src="https://github.com/user-attachments/assets/9565ab14-1fec-45f0-a0f6-329fc5f678e6" />
 </p>
 
-Distribusi Nilai Mata Pelajaran Pokok: 
-
 ##### Distribusi Nilai Mata Pelajaran IPA
 
 <p align="center">
     <img width="1189" height="567" alt="ipa_subjects" src="https://github.com/user-attachments/assets/e63d8ea9-f418-41fc-97ab-7540eb1c916a" />
 </p>
-
-Distribusi Nilai Mata Pelajaran IPA: 
 
 ##### Distribusi Nilai Mata Pelajaran IPS
 
@@ -232,56 +226,9 @@ Distribusi Nilai Mata Pelajaran IPS:
 
 ## Data Preparation
 ### Feature Enginering
-#### Recommended Major
-Pertama saya melakukan Feature Engineering untuk kita menghitung skor potensi siswa untuk setiap jurusan berdasarkan nilai mata pelajaran terkait. Fungsi compute_major_score() akan menerima satu baris data siswa dan daftar mata pelajaran yang relevan untuk sebuah jurusan, lalu mengembalikan rata‑rata nilai dari mata pelajaran tersebut.
-
-Setelah itu, untuk setiap siswa, kita melakukan iterasi ke seluruh daftar jurusan (df_major) dan hanya mempertimbangkan jurusan yang sesuai dengan jalur (IPA, IPS, atau IPA/IPS). Skor jurusan dihitung dengan memanggil compute_major_score(), kemudian jurusan dengan skor rata‑rata tertinggi dipilih sebagai rekomendasi rule‑based awal. Hasil akhir disimpan ke dalam kolom recommended_major pada df_student:
-```
-def compute_major_score(row, major_subjects):
-      vals = [row[subj] for subj in major_subjects if pd.notna(row.get(subj))]
-      return np.mean(vals) if vals else np.nan
-
-recommended_codes = []
-for _, student in df_student.iterrows():
-      track = student['track'].lower()
-      best_score = -np.inf
-      best_code  = None
-
-      for _, mj in df_major.iterrows():
-            # Ambil track_type bisa 'IPA', 'IPS', atau 'IPA/IPS'
-            mj_track = mj['track_type'].lower()
-            if (mj_track == track) or (mj_track == 'ipa/ips'):
-                  # pecah related_subjects dengan ';'
-                  subjects = [s.strip() for s in mj['related_subjects'].split(';')]
-                  score = compute_major_score(student, subjects)
-                  if score > best_score:
-                        best_score = score
-                        best_code  = mj['code']
-
-      recommended_codes.append(best_code)
-
-df_student['recommended_major'] = recommended_codes
-```
-Output Distribusi Recommended Major :
-```
-recommended_major
-A1     225
-A10    565
-A11    507
-A12    540
-A13    470
-A2     479
-A3      52
-A4     719
-A5     290
-A6     281
-A7     386
-A9     388
-Name: count, dtype: int64
-```
 
 #### Threshold Passing Grade
-Lanjut saya menambahkan langkah perhitungan passing grade pada fase Data Preparation untuk memastikan rekomendasi jurusan tidak sekadar berdasar peringkat skor saja, tetapi juga merefleksikan ambang kompetisi yang riil. Dengan fungsi `add_passing_grade()`, saya menghitung persentil ke‑75 dari distribusi rata‑rata nilai siswa pada mata pelajaran terkait untuk setiap jurusan. Persentil ini saya ambil sebagai threshold—artinya, saya menganggap seorang calon siswa “memenuhi syarat” jika rata‑rata nilai pada mata pelajaran jurusan tersebut berada di atas nilai yang dicapai 75% siswa dalam dataset sintetis.
+Lanjut saya menambahkan langkah perhitungan passing grade pada fase Data Preparation untuk memastikan rekomendasi jurusan tidak sekadar berdasar peringkat skor saja, tetapi juga merefleksikan ambang kompetisi yang riil. Dengan fungsi `add_passing_grade()`, saya menghitung persentil ke‑75 dari distribusi rata‑rata nilai siswa pada mata pelajaran terkait untuk setiap jurusan. Persentil ini saya ambil sebagai threshold—artinya, saya menganggap seorang calon siswa "memenuhi syarat" jika rata‑rata nilai pada mata pelajaran jurusan tersebut berada di atas nilai yang dicapai 75% siswa dalam dataset sintetis.
 
 Secara teknis, saya mem‑parse kolom `related_subjects` menjadi daftar nama mapel (lowercase, underscore), lalu memilih kolom nilai siswa yang cocok. Setelah menghitung rata‑rata setiap siswa untuk daftar mapel itu, saya mengambil nilai persentil ke‑75 sebagai passing_grade. Hasilnya, setiap baris pada df_major kini memuat kolom passing_grade nilai ambang minimal yang kemudian saya pakai di fungsi prediksi untuk memfilter jurusan sebelum model Neural Network memberikan rekomendasi akhir.
 
@@ -296,19 +243,19 @@ def add_passing_grade(df_students: pd.DataFrame,
       """
       thresholds = []
       for _, mj in df_majors.iterrows():
-            # Parse dan format nama mapel terkait
             rel = [s.strip().lower().replace(' ', '_')
                   for s in mj[related_col].split(';')]
-            # Ambil kolom yang cocok
+            
             cols = [c for c in df_students.columns if c in rel]
+            
             if not cols:
                   thresholds.append(np.nan)
                   continue
-            # Rata‑rata per siswa
+            
             avg_scores = df_students[cols].mean(axis=1)
-            # Persentil ke-pct
             value = np.percentile(avg_scores.dropna(), pct)
             thresholds.append(round(value, 2))
+            
       return pd.Series(thresholds, name='passing_grade')
 
 df_major['passing_grade'] = add_passing_grade(df_student, df_major, pct=75)
@@ -317,6 +264,47 @@ Output :
 
 <p align="center">
     <img width="1043" height="388" alt="passing_grades" src="https://github.com/user-attachments/assets/a0121e28-69e1-4b46-afde-9ce4c6f86830" />
+</p>
+
+#### Recommended Major
+Pertama saya melakukan Feature Engineering untuk kita menghitung skor potensi siswa untuk setiap jurusan berdasarkan nilai mata pelajaran terkait. Fungsi compute_major_score() akan menerima satu baris data siswa dan daftar mata pelajaran yang relevan untuk sebuah jurusan, lalu mengembalikan rata‑rata nilai dari mata pelajaran tersebut.
+
+Setelah itu, untuk setiap siswa, kita melakukan iterasi ke seluruh daftar jurusan (df_major) dan hanya mempertimbangkan jurusan yang sesuai dengan jalur (IPA, IPS, atau IPA/IPS). Skor jurusan dihitung dengan memanggil compute_major_score(), kemudian jurusan dengan skor rata‑rata tertinggi dipilih sebagai rekomendasi rule‑based awal. Hasil akhir disimpan ke dalam kolom recommended_major pada df_student:
+```
+def compute_major_score(student_row: pd.Series, major_subjects: list[str]) -> float:
+      """Return mean score of the given related_subjects for one student."""
+      vals = [student_row[subj] 
+                  for subj in major_subjects 
+                  if pd.notna(student_row.get(subj))]
+      return np.mean(vals) if vals else np.nan
+
+recommended_codes = []
+for _, student in df_student.iterrows():
+      track = student['track'].upper()
+      best_score = -np.inf
+      best_code  = None
+
+      df_track = df_major[df_major['track_type'] == track]
+
+      for _, mj in df_track.iterrows():
+            subjects = [s.strip() for s in mj['related_subjects'].split(';')]
+            
+            score = compute_major_score(student, subjects)
+            
+            pg = mj['passing_grade']
+            if not np.isnan(score) and score >= pg:
+                  if score > best_score:
+                        best_score = score
+                        best_code  = mj['code']
+      
+      recommended_codes.append(best_code)
+
+df_student['recommended_major'] = recommended_codes
+```
+Output Distribusi Recommended Major :
+
+<p align="center">
+
 </p>
 
 
@@ -334,21 +322,44 @@ Ouput :
 
 
 ### Label Encoder
-Pada tahap Label Encoding, saya mengonversi target rekomendasi jurusan (__recommended_major__) yang awalnya berupa kode string seperti “A1”, “A2”, …, “A13” menjadi format numerik sehingga dapat ditangani oleh model. Saya menggunakan LabelEncoder dari scikit‑learn untuk memetakan setiap kode jurusan ke indeks bilangan bulat unik. Setelah proses encoding, variabel target (y) berwujud array integer, sementara daftar classes menyimpan urutan kode jurusan asli. Langkah ini memastikan kompatibilitas dengan fungsi predict() dan metrik evaluasi pada model Neural Network Keras Sequential, sekaligus mempertahankan kemampuan untuk melakukan inverse transform saat menampilkan kembali kode jurusan hasil prediksi.
+Pada tahap Label Encoding, saya mengonversi target rekomendasi jurusan (__recommended_major__) yang awalnya berupa kode string seperti "A1", "A2", …, "A13" menjadi format numerik sehingga dapat ditangani oleh model. Saya menggunakan LabelEncoder dari scikit‑learn untuk memetakan setiap kode jurusan ke indeks bilangan bulat unik. Setelah proses encoding, variabel target (y) berwujud array integer, sementara daftar classes menyimpan urutan kode jurusan asli. Langkah ini memastikan kompatibilitas dengan fungsi predict() dan metrik evaluasi pada model Neural Network Keras Sequential, sekaligus mempertahankan kemampuan untuk melakukan inverse transform saat menampilkan kembali kode jurusan hasil prediksi.
 ```
 le = LabelEncoder().fit(final_df['recommended_major'])
 classes = list(le.classes_)
 ```
+Output:
+```
+['A1',
+ 'A10',
+ 'A11',
+ 'A12',
+ 'A13',
+ 'A14',
+ 'A15',
+ 'A16',
+ 'A17',
+ 'A18',
+ 'A19',
+ 'A2',
+ 'A20',
+ 'A21',
+ 'A3',
+ 'A4',
+ 'A5',
+ 'A6',
+ 'A7',
+ 'A8',
+ 'A9',
+ None]
+```
 
 ### Numerical Features & Split Data
-Saya memilih 19 fitur numerik—terdiri dari delapan mata pelajaran pokok dan sebelas mata pelajaran peminatan—sebagai variabel input utama. Setelah mengumpulkan data siswa dan target rekomendasi jurusan, saya melakukan train–validation–test split secara stratified (70% train, 15% validation, 15% test) berdasarkan label jurusan. Pendekatan stratified ini menjaga distribusi setiap jurusan tetap konsisten di ketiga subset, sehingga evaluasi akurasi dan metrik lain mencerminkan performa model pada populasi yang representatif.
+Saya memilih 19 fitur numerik—terdiri dari delapan mata pelajaran pokok dan sebelas mata pelajaran peminatan—sebagai variabel input utama. Setelah mengumpulkan data siswa dan target rekomendasi jurusan, saya melakukan train-validation-test split secara stratified (70% train, 15% validation, 15% test) berdasarkan label jurusan. Pendekatan stratified ini menjaga distribusi setiap jurusan tetap konsisten di ketiga subset, sehingga evaluasi akurasi dan metrik lain mencerminkan performa model pada populasi yang representatif.
 ```
 feature_cols = core_subjects + ipa_subjects + ips_subjects
 
 X = final_df[feature_cols]
 y_idx = le.transform(final_df['recommended_major'])
-
-
 ```
 ```
 X_train, X_temp, y_train, y_temp = train_test_split(
@@ -367,7 +378,7 @@ Test: 736 samples
 ```
 
 ### Simple Imputer & Standard Scaler
-Untuk menangani missing values—karena perbedaan jalur IPA/IPS yang membuat beberapa kolom “kosong”—saya menggunakan SimpleImputer(strategy='mean') untuk mengganti nilai NaN dengan rata‑rata kolom, diikuti dengan StandardScaler() untuk melakukan normalisasi z‑score (mean = 0, std = 1). Kedua langkah ini saya bungkus dalam Pipeline sehingga preprocessing dapat diterapkan konsisten pada data train, validation, dan test, serta pada data inference baru.
+Untuk menangani missing values—karena perbedaan jalur IPA/IPS yang membuat beberapa kolom "kosong"—saya menggunakan SimpleImputer(strategy='mean') untuk mengganti nilai NaN dengan rata‑rata kolom, diikuti dengan StandardScaler() untuk melakukan normalisasi z‑score (mean = 0, std = 1). Kedua langkah ini saya bungkus dalam Pipeline sehingga preprocessing dapat diterapkan konsisten pada data train, validation, dan test, serta pada data inference baru.
 ```
 num_pipe = Pipeline([
       ('imputer', SimpleImputer(strategy='mean')),
@@ -404,7 +415,7 @@ model.summary()
 
 callbacks = EarlyStopping(
       monitor='val_loss',
-      patience=10,
+      patience=5,
       restore_best_weights=True
 )
 
@@ -415,7 +426,7 @@ history = model.fit(
       epochs=100,
       batch_size=32,
       callbacks=[callbacks],
-      verbose=2
+      verbose=1
 )
 ```
 
@@ -423,36 +434,36 @@ history = model.fit(
     <img width="607" height="505" alt="sequential_layers" src="https://github.com/user-attachments/assets/1de3b069-d046-4e42-a7df-c374ff910cc3" />
 </p>
 
-Model ini saya kompilasi dengan optimizer Adam, loss categorical_crossentropy, dan metrik accuracy. Selain itu, saya menambahkan callback EarlyStopping (monitor=‘val_loss’, patience=10) agar pelatihan berhenti otomatis saat tidak ada peningkatan, meminimalkan overfitting dan menghemat waktu komputasi.
+Model ini saya kompilasi dengan optimizer Adam, loss categorical_crossentropy, dan metrik accuracy. Selain itu, saya menambahkan callback EarlyStopping (monitor='val_loss", patience=5) agar pelatihan berhenti otomatis saat tidak ada peningkatan, meminimalkan overfitting dan menghemat waktu komputasi.
 
 ### SHAP
-SHAP (SHapley Additive exPlanations) Summary Plot menampilkan kontribusi rata‑rata absolut setiap fitur terhadap prediksi model, diukur sebagai nilai SHAP. Sumbu horizontal menggambarkan “mean(|SHAP value|)”: semakin panjang batang, semakin besar peran fitur tersebut dalam memengaruhi keputusan model. Fitur–fitur diurutkan dari yang paling penting (puncak grafik) hingga yang paling tidak berpengaruh (bawah grafik).
+SHAP (SHapley Additive exPlanations) Summary Plot menampilkan kontribusi rata‑rata absolut setiap fitur terhadap prediksi model, diukur sebagai nilai SHAP. Sumbu horizontal menggambarkan "mean(|SHAP value|)": semakin panjang batang, semakin besar peran fitur tersebut dalam memengaruhi keputusan model. Fitur-fitur diurutkan dari yang paling penting (puncak grafik) hingga yang paling tidak berpengaruh (bawah grafik).
 
 <p align="center">
-    <img width="790" height="900" alt="shap_summary_plot" src="https://github.com/user-attachments/assets/821dece7-7ee4-4c43-a3a7-8dfd8900598b" />
+    
 </p>
 
-Warna pada setiap batang mewakili nilai aktual fitur: titik‑titik merah menandakan sampel dengan nilai fitur tinggi, biru menandakan sampel dengan nilai rendah. Misalnya, pada grafik di atas fitur informatika dan seni_budaya berada di urutan teratas, menunjukkan bahwa variasi nilai kedua mata pelajaran ini paling banyak menggeser probabilitas rekomendasi jurusan; siswa dengan nilai informatika tinggi lebih cenderung dipetakan ke jurusan IT, sedangkan nilai seni_budaya tinggi mendorong rekomendasi jurusan–jurusan berbasis estetika (Desain Interior, Arsitektur). Dengan demikian, SHAP memberikan gambaran kuantitatif sekaligus intuitif tentang mana mata pelajaran yang paling krusial bagi model dalam menentukan jurusan terbaik bagi setiap siswa.
+Warna pada setiap batang mewakili nilai aktual fitur: titik‑titik merah menandakan sampel dengan nilai fitur tinggi, biru menandakan sampel dengan nilai rendah. Misalnya, pada grafik di atas fitur informatika dan seni_budaya berada di urutan teratas, menunjukkan bahwa variasi nilai kedua mata pelajaran ini paling banyak menggeser probabilitas rekomendasi jurusan; siswa dengan nilai informatika tinggi lebih cenderung dipetakan ke jurusan IT, sedangkan nilai seni_budaya tinggi mendorong rekomendasi jurusan-jurusan berbasis estetika (Desain Interior, Arsitektur). Dengan demikian, SHAP memberikan gambaran kuantitatif sekaligus intuitif tentang mana mata pelajaran yang paling krusial bagi model dalam menentukan jurusan terbaik bagi setiap siswa.
 
 
 ### LIME
-LIME (Local Interpretable Model‑agnostic Explanations) LIME membantu kita memahami “mengapa” model Neural Network mengambil keputusan tertentu untuk tiap sampel siswa. Daripada melihat keseluruhan dataset, LIME membuat model lokal sederhana (biasanya regresi linier) di sekitar titik data yang ingin dijelaskan. Pada grafik LIME:
+LIME (Local Interpretable Model‑agnostic Explanations) LIME membantu kita memahami "mengapa" model Neural Network mengambil keputusan tertentu untuk tiap sampel siswa. Daripada melihat keseluruhan dataset, LIME membuat model lokal sederhana (biasanya regresi linier) di sekitar titik data yang ingin dijelaskan. Pada grafik LIME:
 
 <p align="center">
-    <img width="1273" height="220" alt="lime_model" src="https://github.com/user-attachments/assets/24ad46cf-e208-44a3-87bb-73cd10120ac2" />
+    
 </p>
 
 1. Panel kiri memperlihatkan probabilitas prediksi masing‑masing jurusan, sehingga Anda tahu seberapa yakin model.
 
-2. Diagram batang di tengah (bar chart) menampilkan lima fitur (mata pelajaran) teratas yang paling banyak mendorong prediksi ke satu jurusan—misalnya A10 (Psikologi). Batang ke kanan berarti fitur tersebut “menambah” probabilitas jurusan; batang ke kiri berarti “mengurangi.”
+2. Diagram batang di tengah (bar chart) menampilkan lima fitur (mata pelajaran) teratas yang paling banyak mendorong prediksi ke satu jurusan—misalnya A2 (Sistem Informasi). Batang ke kanan berarti fitur tersebut "menambah" probabilitas jurusan; batang ke kiri berarti "mengurangi".
 
-3. Tabel di kanan memuat nilai Z‑score (baku) fitur pada sampel: semakin positif nilainya (mis. bahasa_indonesia 1.69), semakin besar dorongan ke prediksi, dan sebaliknya.
+3. Tabel di kanan memuat nilai Z‑score (baku) fitur pada sampel: semakin positif nilainya (mis. ppkn 1.26), semakin besar dorongan ke prediksi, dan sebaliknya.
 
-Dengan LIME, kita mendapatkan penjelasan yang lokal dan intuitif: untuk setiap siswa, kita dapat melihat mata pelajaran mana yang menjadi “bintang” pendorong rekomendasi model, serta mana yang justru menahan probabilitasnya. Penjelasan ini memudahkan siswa maupun orang tua memahami dan percaya pada rekomendasi jurusan yang dihasilkan.
+Dengan LIME, kita mendapatkan penjelasan yang lokal dan intuitif: untuk setiap siswa, kita dapat melihat mata pelajaran mana yang menjadi "bintang" pendorong rekomendasi model, serta mana yang justru menahan probabilitasnya. Penjelasan ini memudahkan siswa maupun orang tua memahami dan percaya pada rekomendasi jurusan yang dihasilkan.
 
 ## Tuning Model
 ### RandomizedSearchCV
-Saya menerapkan __RandomizedSearchCV__ untuk menyetel hyperparameter Neural Network Keras saya secara efisien dan terukur. Alih‑alih mencoba setiap kombinasi parameter secara exhaustif yang bisa memakan waktu puluhan jam tetapi dengan __RandomizedSearchCV__ secara acak mengambil ratusan konfigurasi dari ruang pencarian yang telah saya tentukan (misalnya rentang learning rate, dropout rate, jumlah unit lapisan), lalu mengevaluasi masing‑masing melalui cross‑validation. Dengan cara ini, model diuji pada beberapa “lipatan” data yang berbeda, sehingga saya mendapatkan gambaran stabil tentang performanya. Setelah seluruh iterasi selesai, __RandomizedSearchCV__ memilih kombinasi dengan skor validasi tertinggi sebagai hyperparameter final. Pendekatan acak ini tidak hanya jauh lebih cepat daripada grid search konvensional, tetapi juga mampu menjelajahi area hyperparameter yang mungkin luput dari grid search yang kaku.
+Saya menerapkan __RandomizedSearchCV__ untuk menyetel hyperparameter Neural Network Keras saya secara efisien dan terukur. Alih‑alih mencoba setiap kombinasi parameter secara exhaustif yang bisa memakan waktu puluhan jam tetapi dengan __RandomizedSearchCV__ secara acak mengambil ratusan konfigurasi dari ruang pencarian yang telah saya tentukan (misalnya rentang learning rate, dropout rate, jumlah unit lapisan), lalu mengevaluasi masing‑masing melalui cross‑validation. Dengan cara ini, model diuji pada beberapa "lipatan" data yang berbeda, sehingga saya mendapatkan gambaran stabil tentang performanya. Setelah seluruh iterasi selesai, __RandomizedSearchCV__ memilih kombinasi dengan skor validasi tertinggi sebagai hyperparameter final. Pendekatan acak ini tidak hanya jauh lebih cepat daripada grid search konvensional, tetapi juga mampu menjelajahi area hyperparameter yang mungkin luput dari grid search yang kaku.
 
 #### Define Parameter
 ```
@@ -461,86 +472,115 @@ keras_clf = KerasClassifier(
       validation_split = 0.15,
       epochs      = 100,
       batch_size  = 32,
-      callbacks   = [EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)],
-      verbose     = True,
+      callbacks   = [EarlyStopping(monitor="val_loss", patience=5, restore_best_weights=True)],
+      verbose     = 1,
 )
 
 param_dist = {
-      "model__learning_rate": loguniform(1e-5, 1e-1),  
-      "model__first_units":    randint(32, 256),
-      "model__second_units":   randint(16, 128),
       "model__optimizer":      ["adam", "rmsprop"],
+      "model__learning_rate":  [1e-2, 1e-3, 5e-4],
       "model__activation":     ["relu", "elu", "gelu", "tanh"],
-      "model__dropout_rate":   [0.1, 0.2, 0.3, 0.4],
-      "batch_size":            [16, 32, 64]
+      "model__dropout_rate":   [0.2, 0.3, 0.4],
+      "model__first_units":    [64, 128],
+      "model__second_units":   [32, 64],
+      "batch_size":            [16, 32]
 }
 ```
 #### Train Hyperparameter
 ```
-for stage in range(4):  # 4 × 50 = 200 iterasi total
-      random_search = RandomizedSearchCV(
-            estimator = keras_clf,
-            param_distributions = param_dist,
-            n_iter = 50,
-            cv = 3,
-            scoring = "accuracy",
-            random_state = 42 + stage,
-            return_train_score = True,  # Tambahkan ini untuk mendapatkan skor pelatihan
-            verbose = True,  # Tambahkan verbosity untuk melihat progres
-            n_jobs = -1,  # Gunakan semua core CPU
-      )
+best_params_overall = None
+best_score = 0
 
-      random_search.fit(X_train_scaled, y_train)
+random_search = RandomizedSearchCV(
+      estimator = keras_clf,
+      param_distributions = param_dist,
+      n_iter = 200,
+      cv = 3,
+      scoring = "accuracy",
+      random_state = 42,
+      return_train_score = True,
+      verbose = 1,
+      n_jobs = -1,
+)
 
-      if random_search.best_score_ > best_score:
-            best_score = random_search.best_score_
-            best_params_overall = random_search.best_params_
+random_search.fit(X_train_scaled, y_train)
 
+best_score = random_search.best_score_
+best_params_overall = random_search.best_params_
 ```
 
 <p align="center">
-    <img width="791" height="900" alt="shap_summary_plot_best" src="https://github.com/user-attachments/assets/762bb18f-4e89-4241-b399-8658ddcd1780" />
+    
 </p>
 
 <p align="center">
-    <img width="1274" height="219" alt="lime_best_model" src="https://github.com/user-attachments/assets/40b05251-0d2a-4892-8895-d11c9cb1bd55" />
+    
 </p>
-
-Insight dari hasil tuning:
-
 
 ## Evaluasi
 ### Evaluasi Model Keras Sequential (Sebelum Tuning)
+#### Accuracy per Epoch
 
 <p align="center">
-    <img width="903" height="790" alt="cm_model" src="https://github.com/user-attachments/assets/e6d87712-c51b-4e4c-bdd3-6a8ca110d144" />
+    
 </p>
-Confusion matrix awal menunjukkan model mampu mengenali sebagian besar kelas jurusan dengan baik, terutama untuk kelas A4 (Teknik Informatika) yang terdeteksi 105 sampel dengan akurasi tinggi. Namun ada beberapa titik kebingungan (“off‑diagonal”) yang konsisten, misalnya 3 sampel A1 (Manajemen) terprediksi sebagai A13 (Desain Interior) dan 2 sampel A11 (Arsitektur) terdeteksi sebagai A4. Kelas A3 (Teknik Industri) relatif sedikit sampelnya sehingga terjadi mis‑classifikasi ke A7 (Sistem Informasi) meski hanya 2 kasus. Keseluruhan, rata‑rata akurasi tiap kelas berkisar antara 75–98%, menandakan model sudah belajar pola fitur akademik, tetapi masih butuh penyempurnaan pada jurusan dengan jumlah data terbatas atau feature overlap tinggi.
+
+Grafik "Accuracy per Epoch" memperlihatkan bahwa pada fase awal pelatihan (epoch 0-5), akurasi training dan validasi sama‑sama melonjak cepat—training accuracy dari sekitar 30 % ke 55 % dan validation accuracy dari 33 % ke 60 %. Setelah epoch ke‑10, laju peningkatan akurasi mulai melambat, namun validation accuracy terus menunjukkan tren naik yang stabil hingga mencapai puncaknya di kisaran 82-84 % pada akhir epoch (65). Sementara itu, training accuracy tercatat stabil di rentang 73-75 %, sedikit lebih rendah dari validation accuracy, menandakan model tidak mengalami overfitting signifikan. Kurva yang relatif "bergelombang kecil" pada kedua metrik menggambarkan adanya proses optimasi gradien yang konsisten—cukup agresif untuk menangkap pola tanpa membuat model terlalu kaku pada data training.
+
+#### Loss per Epoch
+
+<p align="center">
+    
+</p>
+
+Pada grafik "Loss per Epoch", loss training dan validation keduanya menurun tajam di epoch 0-10, dari nilai awal sekitar 2,7 (training) dan 2,3 (validation) turun ke kisaran masing‑masing 1,2 dan 0,8. Setelah itu, loss training terus menurun secara perlahan dan merata hingga mencapai sekitar 0,75 pada epoch akhir, sedangkan validation loss menurun lebih cepat dan stabil di kisaran 0,53-0,60. Jarak yang relatif konsisten antara dua kurva—dengan validation loss selalu sedikit di bawah training loss—mengonfirmasi bahwa model tidak hanya semakin fit terhadap data training, tetapi juga generalisasi terhadap data baru terus membaik. Tidak terlihat tanda‑tanda divergensi atau kenaikan loss validation, sehingga bisa disimpulkan bahwa jumlah epoch dan parameter regularisasi (dropout, learning rate) telah dipilih secara tepat untuk mencegah overfitting.
+
+#### Confussion Matrix
+
+<p align="center">
+    
+</p>
+
+Confusion matrix awal menunjukkan performa yang cukup baik pada mayoritas kelas dengan diagonal yang tebal, misalnya kelas Code 22 berhasil mengklasifikasikan 229 dari 231 sampel dengan benar, kelas Code 4 mencapai 40/42, dan kelas Code 12 mencapai 32/34. Rata‑rata akurasi per kelas berada di kisaran 85-99%. Meski demikian, sejumlah kelas berjumlah data terbatas—seperti Code 3 (21/23 benar), Code 8 (20/22 benar) dan Code 16 (27/29 benar)—masih menunjukkan mis‑classifikasi 1-2 sampel, dan beberapa pola off‑diagonal konsisten terlihat pada pertukaran antar Code 1, Code 6, dan Code 18. Hal ini mengindikasikan bahwa meski model telah mempelajari pola fitur akademik dengan baik, ia masih kesulitan membedakan jurusan yang overlap fiturnya tinggi atau yang memiliki sedikit contoh.
 
 ### Evaluasi Model Keras Sequential Terbaik (Setelah Tuning)
+#### Confussion Matrix
 
 <p align="center">
-    <img width="900" height="790" alt="cm_best_model" src="https://github.com/user-attachments/assets/250b7253-a425-46f8-b425-114613f2e0c1" />
+    
 </p>
-Confusion matrix model terbaik memperlihatkan peningkatan keseragaman diagonal: misalnya kelas “Code 8” (Ilmu Komputer) kini terdeteksi 107/109 sampel dengan benar, naik dari 105 sebelumnya. Kesalahan prediksi untuk kelas “Code 1” (Manajemen) yang awalnya 3 sample menurun menjadi 2, dan confusion antara A1/A2 berkurang secara signifikan. Beberapa kelas seperti “Code 3” (Teknik Industri) dan “Code 10” (Psikologi) juga menunjukkan peningkatan ketepatan prediksi. Secara keseluruhan, tuning hyperparameter melalui RandomizedSearchCV berhasil meningkatkan stabilitas dan konsistensi model, mengurangi noise di cell‑cell off‑diagonal, serta memperkuat kapabilitas model dalam membedakan jurusan yang fitur‑fiturnya saling tumpang‑tindih.
 
-### Interpretasi Hasil dan Implikasi
-Perbandingan kedua confusion matrix menunjukkan bahwa teknik tuning secara acak (RandomizedSearchCV) tidak hanya meningkatkan skor validasi, tetapi juga konkret mengurangi kesalahan klasifikasi spesifik—terutama di jurusan teknik dan teknologi informasi. Hal ini menegaskan keefektifan pendekatan Keras Sequential untuk memetakan profil nilai akademik siswa ke jurusan target di Universitas Gunadarma. Adanya residual error di beberapa jurusan menandakan perlunya perbaikan data (misalnya menambah sampel di jurusan under‑represented) atau eksplorasi fitur tambahan (seperti data non‑akademik) untuk menyempurnakan sistem rekomendasi.
+Pada confusion matrix model terbaik, hampir semua kelas menyentuh peningkatan akurasi: Code 4 naik menjadi 41/42, Code 3 menjadi 22/23, Code 8 menjadi 21/22, Code 10 menjadi 18/19, Code 12 menjadi 34/35, Code 16 menjadi 29/30, dan Code 19 menjadi 31/32 sampel yang terprediksi benar. Kelas besar seperti Code 22 juga tetap stabil di 221/223. Selain itu, jumlah mis‑label global menurun dan distribusi kesalahan menjadi lebih tersebar—pertukaran antar Code 1-2 dan Code 6-7 kini hanya terjadi pada 1-2 sampel saja. Hal ini menunjukkan bahwa tuning hyperparameter dengan RandomizedSearchCV telah berhasil meningkatkan stabilitas dan konsistensi model, meski kelas dengan sangat sedikit data (seperti Code 15 dan Code 17) masih berpotensi mendapat manfaat dari data tambahan.
 
-### Kesimpulan Evaluasi
-Model terbaik mencapai keseimbangan optimal antara kompleksitas dan generalisasi: confusion matrix yang lebih “bersih” memvalidasi bahwa pemilihan arsitektur layer, fungsi aktivasi, learning rate, dan dropout rate berhasil memfokuskan model pada pola distribusi nilai yang relevan. Dengan akurasi per‑kelas yang meningkat dan false positive yang menurun, sistem ini kini siap diintegrasikan pada antarmuka Streamlit untuk mendukung siswa dalam memilih jurusan kuliah—memberikan tidak hanya prediksi probabilistik, tetapi juga keyakinan empiris yang kuat berdasarkan hasil evaluasi.
+### Kesimpulan
+Berdasarkan evaluasi performa model menggunakan confusion matrix, terbukti bahwa penerapan RandomizedSearchCV pada arsitektur Keras Sequential berhasil meningkatkan akurasi klasifikasi jurusan secara signifikan. Model terbaik menunjukkan peningkatan konsistensi pada diagonal confusion matrix, dengan rata‑rata akurasi per kelas yang naik dari kisaran 85–99 % menjadi 90–100 % dan distribusi kesalahan off‑diagonal yang lebih merata. Hal ini menegaskan bahwa kombinasi pemilihan jumlah layer, fungsi aktivasi, learning rate, dan dropout rate yang optimal mampu memetakan pola distribusi nilai akademik siswa ke dalam jurusan target di Universitas Gunadarma secara andal.
+
+Meskipun demikian, masih terdapat residual error pada jurusan dengan jumlah sampel terbatas (misalnya Code 15 dan Code 17) dan beberapa kasus overlap fitur antar jurusan serupa. Temuan ini mengindikasikan bahwa kualitas dan kuantitas data akademik semata belum sepenuhnya memadai untuk menghasilkan rekomendasi yang benar‑benar personal dan bebas bias, khususnya pada program studi yang under‑represented atau memiliki karakteristik nilai yang mirip.
+
+### Saran
+Sebagai pengembangan selanjutnya, penulis merekomendasikan:
+
+- Perluasan Data Non‑Akademik: Mengintegrasikan variabel tambahan seperti skor minat‑bakat, hasil asesmen kepribadian, partisipasi ekstrakurikuler, dan latar belakang sosial‑ekonomi guna memperkaya fitur model. Pendekatan ini diharapkan dapat mengurangi overlap distribusi nilai akademik murni dan menambah konteks personalisasi rekomendasi.
+
+- Augmentasi dan Pengayaan Sampel: Menambah volume data pada jurusan yang jumlah sampelnya sedikit melalui pengumpulan data sukarela atau teknik augmentasi sintetis. Strategi ini penting untuk meminimalkan bias model terhadap kelas dominan dan meningkatkan generalisasi pada kelas minoritas.
+
+- Perluasan Cakupan Jurusan: Memperluas ruang lingkup program studi yang menjadi target rekomendasi, tidak hanya lintas fakultas di Universitas Gunadarma tetapi juga institusi mitra lain. Hal ini akan memperkaya opsi pilihan bagi calon mahasiswa dan meningkatkan relevansi sistem.
+
+- Eksperimen Multimodal dan Ensemble: Menyelidiki integrasi data teks—seperti esai motivasi atau rekomendasi guru—serta penerapan ensemble learning dengan mengombinasikan beberapa model klasifikasi, untuk meningkatkan ketahanan sistem terhadap variasi data dan memperoleh prediksi yang lebih robust.
+
+- Dengan implementasi saran‑saran di atas, diharapkan sistem rekomendasi pemilihan jurusan berbasis machine learning ini dapat beralih dari sekadar akurat secara statistik menjadi lebih adaptif, kontekstual, dan memberikan nilai tambah nyata bagi calon mahasiswa.
 
 ## Reference
 - Badan Pusat Statistik. 2022. Statistik Pendidikan 2022. Badan Pusat Statistik. Jakarta.
 
-- Muttaqin et al. 2023. Pengenalan Data Mining. Yayasan Kita Menulis, Yogyakarta.
+- Muttaqin et al. 2023. "Pengenalan Data Mining". Yayasan Kita Menulis, Yogyakarta.
 
-- Purwati, Neni, Rini Nurlistiani dan Oscar Devinsen. 2020. ‘Data Mining dengan Algoritma Neural Network dan Visualisasi Data untuk Prediksi Kelulusan Mahasiswa’. Jurnal Informatika, 20(2), hlm. 156–163.
+- Purwati, Neni, Rini Nurlistiani dan Oscar Devinsen. 2020. "Data Mining dengan Algoritma Neural Network dan Visualisasi Data untuk Prediksi Kelulusan Mahasiswa". Jurnal Informatika, 20(2), hlm. 156-163.
 
-- Raihan, Muhammad Iqbal. 2024. ‘Implementasi Backpropagation untuk Rekomendasi Jurusan Peminatan Mahasiswa Program Studi Teknik Informatika di Universitas Islam Balitar’. Jurnal Ilmiah Sistem Informasi dan Teknik Informatika (JISTI), 7(2), hlm. 219–226.
+- Raihan, Muhammad Iqbal. 2024. "Implementasi Backpropagation untuk Rekomendasi Jurusan Peminatan Mahasiswa Program Studi Teknik Informatika di Universitas Islam Balitar". Jurnal Ilmiah Sistem Informasi dan Teknik Informatika (JISTI), 7(2), hlm. 219-226.
 
-- Rianti, Afika, Nuur Wachid Abdul Majid dan Ahmad Fauzi. 2023. ‘CRISP-DM: Metodologi Proyek Data Science’. Prosiding Seminar Nasional Teknologi Informasi dan Bisnis (SENATIB) 2023.
+- Rianti, Afika, Nuur Wachid Abdul Majid dan Ahmad Fauzi. 2023. "CRISP-DM: Metodologi Proyek Data Science". Prosiding Seminar Nasional Teknologi Informasi dan Bisnis (SENATIB) 2023.
 
-- Siardizal dan Rosy Dasmita. 2016. ‘Jaringan Syaraf Tiruan untuk Menentukan Jurusan di Sekolah Menengah Atas (SMA) (Studi Kasus: SMA Negeri 1 Sungai Penuh)’. Jurnal Ilmu Pengetahuan dan Sistem Informasi, 2: 91–100.
+- Siardizal dan Rosy Dasmita. 2016. "Jaringan Syaraf Tiruan untuk Menentukan Jurusan di Sekolah Menengah Atas (SMA) (Studi Kasus: SMA Negeri 1 Sungai Penuh)". Jurnal Ilmu Pengetahuan dan Sistem Informasi, 2: 91-100.
 
-- Ulfa, Annisa, Doni Winarso dan Edo Arribe. 2020. ‘Sistem Rekomendasi Jurusan Kuliah Bagi Calon Mahasiswa Baru Menggunakan Algoritma C4.5’. Jurnal FASILKOM, 10(1): 61–65.
+- Ulfa, Annisa, Doni Winarso dan Edo Arribe. 2020. "Sistem Rekomendasi Jurusan Kuliah Bagi Calon Mahasiswa Baru Menggunakan Algoritma C4.5". Jurnal FASILKOM, 10(1): 61-65.
