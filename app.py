@@ -9,13 +9,20 @@ from PIL import Image
 import time
 
 BASE_DIR = Path(__file__)
-data_path = BASE_DIR / "all_data.csv"
 logo_path = BASE_DIR.parent / "images/logo-gundar.png"
 
-num_pipe  = joblib.load("Models/num_pipe.pkl")
-model     = tf.keras.models.load_model("Models/best_student_major_recommendation_model.keras", compile=False)
-le        = joblib.load("Models/label_encoder.pkl")
-df_major  = pd.read_csv("Datasets/ug_majors_with_passing_grade.csv")
+@st.cache_resource
+def load_resources():
+      num_pipe = joblib.load("Models/num_pipe.pkl")
+      model     = tf.keras.models.load_model(
+            "Models/best_student_major_recommendation_model.keras",
+            compile=False
+      )
+      le        = joblib.load("Models/label_encoder.pkl")
+      df_major  = pd.read_csv("Datasets/ug_majors_with_passing_grade.csv")
+      return num_pipe, model, le, df_major
+
+num_pipe, model, le, df_major = load_resources()
 
 core_subjects = [
       'agama', 'ppkn', 'bahasa_indonesia', 'matematika', 'bahasa_inggris',
@@ -233,75 +240,54 @@ elif menu == "Cari Jurusan":
             - input_data: dict mapping feature (nama mapel) -> nilai (float)
             - track_bin : 1 untuk IPA, 0 untuk IPS
             """
-            # 1) Siapkan DataFrame numerik & hitung probabilitas
-            df_num = pd.DataFrame(
-                  [{f: float(input_data[f]) for f in feature_cols}]
-            ).astype(float)
+            df_num = pd.DataFrame([{f: float(input_data.get(f, 0)) for f in feature_cols}]).astype(float).astype(float)
             X_num = num_pipe.transform(df_num.values)
             proba = model.predict(X_num)[0]
-
+            
             desired = 'IPA' if track_bin == 1 else 'IPS'
+            df_track = df_major[df_major['track_type'].str.upper() == desired].copy()
 
-            # 2) Filter df_major hanya untuk track_type yang persis sesuai
-            df_track = df_major[
-                  df_major['track_type'].str.upper() == desired
-            ].copy()
-
-            # 3) Hitung rata‑rata related_subjects dan kumpulkan yang lulus passing_grade
             results = []
             underrated = []
+
             for _, row in df_track.iterrows():
-                  code = row['code']
-                  pg   = row['passing_grade']
+                  # get passing grade and related subjects
+                  pg = row['passing_grade']
                   rels = [s.strip() for s in row['related_subjects'].split(';')]
 
-                  # ambil nilai, kalau ada 0 → skip seluruh jurusan
-                  vals = []
-                  for subj in rels:
-                        v = float(input_data.get(subj, 0))
-                        if v <= 0:
-                              vals = []
-                              break
-                        vals.append(v)
-                        
-                  if not vals:
-                        continue
+                  # always include all related subject scores (zeros if missing)
+                  vals = [float(input_data.get(subj, 0)) for subj in rels]
+                  avg_score = sum(vals) / len(rels) if rels else 0.0
 
-                  avg_score = sum(vals) / len(vals)
+                  # probability for this specific major
+                  try:
+                        idx_major = le.transform([row['code']])[0]
+                        proba_i = float(proba[idx_major])
+                  except Exception:
+                        proba_i = 0.0
+
+                  entry = {
+                        'faculty' : row['faculty'],
+                        'major'   : row['major'],
+                        'avg'     : avg_score,
+                        'pg'      : pg,
+                        'proba'   : float(proba_i),
+                        'rel_str' : ", ".join(
+                        subj.replace('_',' ').title()
+                        for subj in sorted(rels, key=lambda x: float(input_data.get(x, 0)), reverse=True)
+                        )
+                  }
+
                   if avg_score >= pg:
-                        # simpan
-                        results.append({
-                        'code'   : code,
-                        'faculty': row['faculty'],
-                        'major'  : row['major'],
-                        'avg'    : avg_score,
-                        'pg'     : pg,
-                        # format daftar mapel terurut desc
-                        'rel_str': ", ".join(
-                              subj.replace('_',' ').title()
-                              for subj, _ in sorted(zip(rels, vals),
-                                                      key=lambda x: x[1], reverse=True)
-                        )
-                        })
+                        results.append(entry)
                   else:
-                        # simpan
-                        underrated.append({
-                        'code'   : code,
-                        'faculty': row['faculty'],
-                        'major'  : row['major'],
-                        'avg'    : avg_score,
-                        'pg'     : pg,
-                        'rel_str': ", ".join(
-                              subj.replace('_',' ').title()
-                              for subj, _ in sorted(zip(rels, vals),
-                                                      key=lambda x: x[1], reverse=True)
-                        )
-                        })
+                        underrated.append(entry)
 
-            # 4) Pilih top 3 berdasar avg (menurun)
-            results = sorted(results, key=lambda x: x['avg'], reverse=True)[:3]
-            underrated = sorted(underrated, key=lambda x: x['avg'], reverse=True)[:3]
+            results    = sorted(results, key=lambda x: x['proba'], reverse=True)[:3]
+            underrated  = sorted(underrated, key=lambda x: x['proba'], reverse=True)[:3]
+
             return results, underrated
+
       
       track = st.radio("Pilih Jalur Peminatan:", ["IPA","IPS"])
       track_bin = 1 if track=="IPA" else 0
@@ -309,103 +295,96 @@ elif menu == "Cari Jurusan":
       if 'last_track_bin' not in st.session_state:
             st.session_state.last_track_bin = track_bin
 
-      active_features = core_subjects + (ipa_subjects if track=="IPA" else ips_subjects)
-      input_data = {}
-      
-      def predict_with_delay(input_data):
-            time.sleep(10)
-            return predict_major_from_streamlit(input_data, track_bin=track_bin)
-      
-      st.markdown("---")
-      st.subheader("Masukkan Nilai Mata Pelajaran Pokok")
-      col1, col2 = st.columns(2)
-      for i, feat in enumerate(all_features):
-            label = feat.replace("_"," ").title()
-            if feat in core_subjects:
-                  with (col1 if i%2==0 else col2):
-                        val = st.text_input(
-                        label,
-                        value="",
-                        key=feat,
-                        placeholder="0.00"
-                        )
-                  input_data[feat] = val
-            else:
-                  input_data[feat] = "0"
-                  
-      st.markdown("---")
-      if st.session_state.last_track_bin != track_bin:
-            with st.spinner(f"Memuat mata pelajaran untuk {track}"):
-                  time.sleep(3)
-            st.session_state.last_track_bin = track_bin
+      with st.form("Isi Form"):
+            active_features = core_subjects + (ipa_subjects if track=="IPA" else ips_subjects)
+            input_data = {}
             
-      st.subheader("Masukkan Nilai Mata Pelajaran Peminatan")
-      col1, col2 = st.columns(2)
-      if track == "IPA":
-            track_subjects = ipa_subjects
-      else:
-            track_subjects = ips_subjects
-            
-      for i, feat in enumerate(all_features):
-            label = feat.replace("_"," ").title()
-            if feat in track_subjects==ipa_subjects:
-                  with (col1 if i%2==0 else col2):
-                        val = st.text_input(
-                        label,
-                        value="",
-                        key=feat,
-                        placeholder="0.00"
-                        )
-                  input_data[feat] = val
-                  
-            if feat in track_subjects==ips_subjects:
-                  with (col1 if i%2==1 else col2):
-                        val = st.text_input(
-                        label,
-                        value="",
-                        key=feat,
-                        placeholder="0.00 - 100.00"
-                        )
-                  input_data[feat] = val
-                  
-      input_data['track_bin'] = track_bin
-      
-      st.markdown("---")
-      if st.button("Mulai Cari", use_container_width=True):
-                  
-            missing = [f for f in active_features if input_data[f].strip()==""]
-            if missing:
-                  st.warning(
-                  f"Mohon isi nilai untuk semua mata pelajaran: "
-                  f"**{', '.join([m.replace('_',' ').title() for m in missing])}.**"
-                  )
-                  st.markdown("---")
-            else:
+            def predict_with_delay(input_data):
                   with st.spinner("Sedang menghitung nilai anda..."):
-                        recs, nrecs = predict_with_delay(input_data)
-                  if len(recs) == 0:
-                        st.warning("Maaf sepertinya tidak ada jurusan yang memenuhi Passing Grade.")
-                        cols = st.columns(len(nrecs))
-                        for col, r in zip(cols, nrecs):
-                              with col:
-                                    st.markdown(f"### {r['major']}  \nKode: **{r['code']}**")
-                                    st.markdown(f"- **Fakultas:** {r['faculty']}")
-                                    st.markdown(f"- **Passing Grade:** {df_major.loc[df_major['code']==r['code'],'passing_grade'].values[0]:.2f}")
-                                    st.markdown("##### Rata‑rata Nilai Terkait")
-                                    st.markdown(f"{r['rel_str']} : **{r['avg']:.2f}**")
-                              
+                        time.sleep(1)
+                  return predict_major_from_streamlit(input_data, track_bin=track_bin)
+            
+            st.markdown("---")
+            st.subheader("Masukkan Nilai Mata Pelajaran Pokok")
+            col1, col2 = st.columns(2)
+            for i, feat in enumerate(core_subjects):
+                  label = feat.replace("_"," ").replace("ppkn","Pendidikan Kewarganegaraan").title()
+                  if feat in core_subjects:
+                        with (col1 if i % 2 == 0 else col2):
+                              val = st.text_input(
+                              label,
+                              value="",
+                              key=feat,
+                              placeholder="0.00 - 100.00"
+                              )
+                        input_data[feat] = val
+                  else:
+                        input_data[feat] = "0"
+                        
+            st.markdown("---")
+            if st.session_state.last_track_bin != track_bin:
+                  with st.spinner(f"Memuat mata pelajaran untuk {track}"):
+                        time.sleep(3)
+                  st.session_state.last_track_bin = track_bin
+                  
+            st.subheader("Masukkan Nilai Mata Pelajaran Peminatan")
+            col1, col2 = st.columns(2)
+            if track == "IPA":
+                  track_subjects = ipa_subjects
+            else:
+                  track_subjects = ips_subjects
+                  
+            for i, feat in enumerate(track_subjects):
+                  label = feat.replace("_"," ").title()
+                  if feat in track_subjects:
+                        with (col1 if i % 2 == 0 else col2):
+                              val = st.text_input(
+                              label,
+                              key=feat,
+                              placeholder="0.00 - 100.00"
+                              )
+                        input_data[feat] = val
+                  else:
+                        input_data[feat] = "0"
+                  
+            input_data['track_bin'] = track_bin
+      
+            st.markdown("---")
+            if st.form_submit_button("Mulai Cari", use_container_width=True):
+                  
+                  missing = [f for f in active_features if input_data[f].strip()==""]
+                  if missing:
+                        st.warning(
+                        f"Mohon isi nilai untuk semua mata pelajaran: "
+                        f"**{', '.join([m.replace('_',' ').title() for m in missing])}.**"
+                        )
                         st.markdown("---")
                   else:
-                        st.success(f"### 🎉 Prediksi berhasil! 🎯 {len(recs)} Jurusan yang cocok buat kamu!")
-                        cols = st.columns(len(recs))
-                        for col, r in zip(cols, recs):
-                              with col:
-                                    st.markdown(f"### {r['major']}  \nKode: **{r['code']}**")
-                                    st.markdown(f"- **Fakultas:** {r['faculty']}")
-                                    st.markdown(f"- **Passing Grade:** {df_major.loc[df_major['code']==r['code'],'passing_grade'].values[0]:.2f}")
-                                    st.markdown("##### Rata-rata Nilai Terkait")
-                                    st.markdown(f"{r['rel_str']} : **{r['avg']:.2f}**")
-                        
-                        st.markdown("---")
+                        recs, nrecs = predict_with_delay(input_data)
+                        if recs:
+                              st.markdown("---")
+                              st.success(f"#### 🎉 Prediksi berhasil! 🎯 {len(recs)} Jurusan yang cocok buat kamu!")
+                              cols = st.columns(len(recs))
+                              for col, r in zip(cols, recs):
+                                    with col:
+                                          st.markdown(f"### {r['major']}")
+                                          st.markdown(f"- **Fakultas:** {r['faculty']}")
+                                          st.markdown(f"- **Passing Grade:** {r['pg']:.2f}")
+                                          st.markdown("##### Rata-rata Nilai Terkait")
+                                          st.markdown(f"{r['rel_str']} : **{r['avg']:.2f}**")
+                              st.markdown("---")
+                        else:
+                              st.markdown("---")
+                              st.warning("Maaf sepertinya tidak ada jurusan yang memenuhi Passing Grade.")
+                              cols = st.columns(len(nrecs))
+                              for col, r in zip(cols, nrecs):
+                                    with col:
+                                          st.markdown(f"### {r['major']}")
+                                          st.markdown(f"- **Fakultas:** {r['faculty']}")
+                                          st.markdown(f"- **Passing Grade:** {r['pg']:.2f}")
+                                          st.markdown("##### Rata-rata Nilai Terkait")
+                                          st.markdown(f"{r['rel_str']} : **{r['avg']:.2f}**")
+                              st.markdown("---")
+      st.markdown("---")
                         
 st.caption("📘 Dibuat oleh Ahmad Zaky Humami | 50422138 | S1 Informatika | Universitas Gunadarma - 2025")
