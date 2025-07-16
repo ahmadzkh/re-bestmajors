@@ -120,7 +120,7 @@ if menu == "Informasi":
       with col1:
             st.markdown("### Mata Pelajaran Pokok :")
             st.table(pd.DataFrame({
-                  "Mata Pelajaran": [s.replace("_", " ").title() for s in core_subjects],
+                  "Mata Pelajaran": [s.replace("_", " ").replace("ppkn", "Pendidikan Kewarganegaraan").title() for s in core_subjects],
                   }))
       with col2:
             st.markdown("### Peminatan IPA :")
@@ -301,7 +301,7 @@ elif menu == "Cari Jurusan":
             
             def predict_with_delay(input_data):
                   with st.spinner("Sedang menghitung nilai anda..."):
-                        time.sleep(1)
+                        time.sleep(10)
                   return predict_major_from_streamlit(input_data, track_bin=track_bin)
             
             st.markdown("---")
