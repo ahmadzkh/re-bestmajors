@@ -228,7 +228,7 @@ Distribusi Nilai Mata Pelajaran IPS:
 ### Feature Enginering
 
 #### Threshold Passing Grade
-Lanjut saya menambahkan langkah perhitungan passing grade pada fase Data Preparation untuk memastikan rekomendasi jurusan tidak sekadar berdasar peringkat skor saja, tetapi juga merefleksikan ambang kompetisi yang riil. Dengan fungsi `add_passing_grade()`, saya menghitung persentil ke‑75 dari distribusi rata‑rata nilai siswa pada mata pelajaran terkait untuk setiap jurusan. Persentil ini saya ambil sebagai threshold—artinya, saya menganggap seorang calon siswa "memenuhi syarat" jika rata‑rata nilai pada mata pelajaran jurusan tersebut berada di atas nilai yang dicapai 75% siswa dalam dataset sintetis.
+Pertama saya melakukan Feature Engineering untuk perhitungan passing grade pada fase Data Preparation untuk memastikan rekomendasi jurusan tidak sekadar berdasar peringkat skor saja, tetapi juga merefleksikan ambang kompetisi yang riil. Dengan fungsi `add_passing_grade()`, saya menghitung persentil ke‑75 dari distribusi rata‑rata nilai siswa pada mata pelajaran terkait untuk setiap jurusan. Persentil ini saya ambil sebagai threshold—artinya, saya menganggap seorang calon siswa "memenuhi syarat" jika rata‑rata nilai pada mata pelajaran jurusan tersebut berada di atas nilai yang dicapai 75% siswa dalam dataset sintetis.
 
 Secara teknis, saya mem‑parse kolom `related_subjects` menjadi daftar nama mapel (lowercase, underscore), lalu memilih kolom nilai siswa yang cocok. Setelah menghitung rata‑rata setiap siswa untuk daftar mapel itu, saya mengambil nilai persentil ke‑75 sebagai passing_grade. Hasilnya, setiap baris pada df_major kini memuat kolom passing_grade nilai ambang minimal yang kemudian saya pakai di fungsi prediksi untuk memfilter jurusan sebelum model Neural Network memberikan rekomendasi akhir.
 
@@ -267,7 +267,7 @@ Output :
 </p>
 
 #### Recommended Major
-Pertama saya melakukan Feature Engineering untuk kita menghitung skor potensi siswa untuk setiap jurusan berdasarkan nilai mata pelajaran terkait. Fungsi compute_major_score() akan menerima satu baris data siswa dan daftar mata pelajaran yang relevan untuk sebuah jurusan, lalu mengembalikan rata‑rata nilai dari mata pelajaran tersebut.
+Lanjut saya melakukan perhitungan skor potensi siswa untuk setiap jurusan berdasarkan nilai mata pelajaran terkait. Fungsi compute_major_score() akan menerima satu baris data siswa dan daftar mata pelajaran yang relevan untuk sebuah jurusan, lalu mengembalikan rata‑rata nilai dari mata pelajaran tersebut.
 
 Setelah itu, untuk setiap siswa, kita melakukan iterasi ke seluruh daftar jurusan (df_major) dan hanya mempertimbangkan jurusan yang sesuai dengan jalur (IPA, IPS, atau IPA/IPS). Skor jurusan dihitung dengan memanggil compute_major_score(), kemudian jurusan dengan skor rata‑rata tertinggi dipilih sebagai rekomendasi rule‑based awal. Hasil akhir disimpan ke dalam kolom recommended_major pada df_student:
 ```
